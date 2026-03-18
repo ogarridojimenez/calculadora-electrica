@@ -147,11 +147,19 @@ export default function Calculator() {
 
   return (
     <div className="flex h-screen bg-[var(--surface-base)]">
+      {/* Sidebar Overlay para móvil */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
         className={`${
           sidebarOpen ? "w-64" : "w-16"
-        } bg-[var(--surface-raised)] border-r border-[var(--border-default)] flex flex-col transition-all duration-200`}
+        } fixed lg:relative z-30 lg:z-auto h-full bg-[var(--surface-raised)] border-r border-[var(--border-default)] flex flex-col transition-all duration-200`}
       >
         {/* Header */}
         <div className="h-16 border-b border-[var(--border-default)] flex items-center px-4">
@@ -233,8 +241,8 @@ export default function Calculator() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto p-8">
+      <main className="flex-1 overflow-y-auto lg:ml-0">
+        <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
           {calculoActivo ? (
             <div className="animate-fade-in">
               {/* Breadcrumb */}
@@ -284,17 +292,25 @@ export default function Calculator() {
           ) : (
             <div className="animate-fade-in">
               {/* Header */}
-              <div className="mb-8">
-                <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-                  Calculadora Eléctrica
-                </h1>
-                <p className="text-[var(--text-secondary)]">
-                  Herramientas profesionales para ingenieros eléctricos basadas en normas cubanas
-                </p>
+              <div className="mb-6 sm:mb-8 flex items-center gap-3">
+                <button
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="lg:hidden p-2 rounded-md hover:bg-[var(--surface-base)] text-[var(--text-secondary)]"
+                >
+                  <Menu size={20} />
+                </button>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
+                    Calculadora Eléctrica
+                  </h1>
+                  <p className="text-[var(--text-secondary)]">
+                    Herramientas profesionales para ingenieros eléctricos basadas en normas cubanas
+                  </p>
+                </div>
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-4 gap-4 mb-8">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
                 {[
                   { label: "Cálculos", value: "8", color: "var(--electric-cyan)" },
                   { label: "Normas", value: "5", color: "var(--ground-green)" },
