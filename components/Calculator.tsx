@@ -118,7 +118,7 @@ const categorias = [
 
 export default function Calculator() {
   const [calculoActivo, setCalculoActivo] = useState<TipoCalculo | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const opcionSeleccionada = menuItems.find((item) => item.id === calculoActivo);
 
@@ -147,6 +147,22 @@ export default function Calculator() {
 
   return (
     <div className="flex h-screen bg-[var(--surface-base)]">
+      {/* Mobile Header - siempre visible en móvil */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-[var(--surface-raised)] border-b border-[var(--border-default)] flex items-center px-4 z-40">
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 rounded-md hover:bg-[var(--surface-base)] text-[var(--text-secondary)] -ml-2"
+        >
+          <Menu size={20} />
+        </button>
+        <div className="flex items-center gap-2 ml-2">
+          <div className="w-7 h-7 rounded-md bg-[var(--electric-cyan)] flex items-center justify-center">
+            <Zap size={14} color="white" strokeWidth={2} />
+          </div>
+          <span className="font-semibold text-[var(--text-primary)]">CalcEléc</span>
+        </div>
+      </div>
+
       {/* Sidebar Overlay para móvil */}
       {sidebarOpen && (
         <div
@@ -241,7 +257,7 @@ export default function Calculator() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto lg:ml-0">
+      <main className="flex-1 overflow-y-auto lg:ml-0 pt-14 lg:pt-0">
         <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
           {calculoActivo ? (
             <div className="animate-fade-in">
@@ -251,7 +267,7 @@ export default function Calculator() {
                   onClick={() => setCalculoActivo(null)}
                   className="text-[var(--text-tertiary)] hover:text-[var(--electric-cyan)] transition-colors flex items-center gap-1"
                 >
-                  <Menu size={14} />
+                  <ChevronLeft size={16} />
                   Menú
                 </button>
                 <span className="text-[var(--text-muted)]">/</span>
@@ -292,21 +308,13 @@ export default function Calculator() {
           ) : (
             <div className="animate-fade-in">
               {/* Header */}
-              <div className="mb-6 sm:mb-8 flex items-center gap-3">
-                <button
-                  onClick={() => setSidebarOpen(!sidebarOpen)}
-                  className="lg:hidden p-2 rounded-md hover:bg-[var(--surface-base)] text-[var(--text-secondary)]"
-                >
-                  <Menu size={20} />
-                </button>
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                    Calculadora Eléctrica
-                  </h1>
-                  <p className="text-[var(--text-secondary)]">
-                    Herramientas profesionales para ingenieros eléctricos basadas en normas cubanas
-                  </p>
-                </div>
+              <div className="mb-6 sm:mb-8">
+                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-2">
+                  Calculadora Eléctrica
+                </h1>
+                <p className="text-[var(--text-secondary)]">
+                  Herramientas profesionales para ingenieros eléctricos basadas en normas cubanas
+                </p>
               </div>
 
               {/* Quick Stats */}
