@@ -1,26 +1,326 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surface Elevation - Technical/Industrial */
+  --surface-base: #f8fafc;
+  --surface-raised: #ffffff;
+  --surface-overlay: #ffffff;
+  
+  /* Text Hierarchy */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --text-muted: #94a3b8;
+  
+  /* Borders - Low opacity for craft */
+  --border-default: rgba(148, 163, 184, 0.2);
+  --border-subtle: rgba(148, 163, 184, 0.1);
+  --border-emphasis: rgba(148, 163, 184, 0.4);
+  --border-focus: #0ea5e9;
+  
+  /* Electrical Domain Colors */
+  --electric-cyan: #0891b2;
+  --electric-cyan-light: #22d3ee;
+  --electric-cyan-subtle: rgba(8, 145, 178, 0.1);
+  
+  --ground-green: #059669;
+  --ground-green-light: #10b981;
+  --ground-green-subtle: rgba(5, 150, 105, 0.1);
+  
+  --alert-red: #dc2626;
+  --alert-red-subtle: rgba(220, 38, 38, 0.1);
+  
+  --warning-amber: #d97706;
+  --warning-amber-subtle: rgba(217, 119, 6, 0.1);
+  
+  /* Control Tokens - Inputs */
+  --control-bg: #f1f5f9;
+  --control-bg-disabled: #e2e8f0;
+  --control-border: var(--border-default);
+  --control-focus-ring: rgba(8, 145, 178, 0.3);
+  
+  /* Shadows - Subtle for technical feel */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.08);
+  
+  /* Spacing Scale (base: 4px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--surface-base);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--border-default);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-emphasis);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Focus States */
+*:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Input Styles */
+input[type="number"],
+input[type="text"],
+select {
+  background: var(--control-bg);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: all 0.15s ease;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus {
+  background: var(--surface-raised);
+  border-color: var(--electric-cyan);
+  box-shadow: 0 0 0 3px var(--control-focus-ring);
+}
+
+input[type="number"]:disabled,
+input[type="text"]:disabled,
+select:disabled {
+  background: var(--control-bg-disabled);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* Button Base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--electric-cyan);
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #0e7490;
+}
+
+.btn-primary:active {
+  background: #155e75;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+}
+
+.btn-ghost:hover {
+  background: var(--electric-cyan-subtle);
+  color: var(--electric-cyan);
+}
+
+/* Card Component */
+.card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Badge Component */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-electric {
+  background: var(--electric-cyan-subtle);
+  color: var(--electric-cyan);
+}
+
+.badge-ground {
+  background: var(--ground-green-subtle);
+  color: var(--ground-green);
+}
+
+.badge-warning {
+  background: var(--warning-amber-subtle);
+  color: var(--warning-amber);
+}
+
+.badge-error {
+  background: var(--alert-red-subtle);
+  color: var(--alert-red);
+}
+
+/* Radio Group */
+.radio-group {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--electric-cyan-subtle);
+  border-radius: var(--radius-md);
+}
+
+.radio-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.radio-option:hover {
+  color: var(--text-primary);
+}
+
+.radio-option.active {
+  background: var(--surface-raised);
+  color: var(--electric-cyan);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Result Display */
+.result-success {
+  background: var(--ground-green-subtle);
+  border: 1px solid var(--ground-green);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.result-warning {
+  background: var(--warning-amber-subtle);
+  border: 1px solid var(--warning-amber);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.result-error {
+  background: var(--alert-red-subtle);
+  border: 1px solid var(--alert-red);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+/* Label */
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+/* Error Text */
+.error-text {
+  font-size: 12px;
+  color: var(--alert-red);
+  margin-top: var(--space-1);
+}
+
+/* Info Box */
+.info-box {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.info-box-cyan {
+  background: var(--electric-cyan-subtle);
+  border: 1px solid rgba(8, 145, 178, 0.2);
+  color: #0e7490;
+}
+
+.info-box-amber {
+  background: var(--warning-amber-subtle);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  color: #b45309;
+}
+
+/* Circuit Diagram SVG */
+.circuit-diagram {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
 }
