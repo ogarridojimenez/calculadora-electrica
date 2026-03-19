@@ -214,7 +214,10 @@ export default function Calculator() {
                   {items.map((item) => (
                     <li key={item.id}>
                       <button
-                        onClick={() => setCalculoActivo(item.id)}
+                        onClick={() => {
+                          setCalculoActivo(item.id);
+                          setSidebarOpen(false);
+                        }}
                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-md transition-all ${
                           calculoActivo === item.id
                             ? "bg-[var(--electric-cyan-subtle)] text-[var(--electric-cyan)]"
