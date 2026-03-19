@@ -1,10 +1,13 @@
 'use client';
 
-import { X, Trash2, Download, Clock, Calculator } from 'lucide-react';
+import { useState } from 'react';
+import { X, Trash2, Download, Clock, Calculator, FileText } from 'lucide-react';
 import { useHistory, type HistoryItem } from './HistoryProvider';
 
 export function HistoryPanel() {
   const { history, removeFromHistory, clearHistory, isPanelOpen, setPanelOpen } = useHistory();
+  const [showFilenameModal, setShowFilenameModal] = useState(false);
+  const [filename, setFilename] = useState('');
 
   const formatInputs = (inputs: Record<string, string | number>, tipo: string) => {
     const entries = Object.entries(inputs);
@@ -27,9 +30,17 @@ export function HistoryPanel() {
       .join(' | ');
   };
 
+  const openFilenameModal = () => {
+    const defaultName = `calcelec-${new Date().toISOString().split('T')[0]}`;
+    setFilename(defaultName);
+    setShowFilenameModal(true);
+  };
+
   const exportToPDF = async () => {
     const { exportHistoryToPDF } = await import('@/lib/pdfExport');
-    exportHistoryToPDF(history);
+    const finalFilename = filename.trim() || `calcelec-${new Date().toISOString().split('T')[0]}`;
+    exportHistoryToPDF(history, finalFilename);
+    setShowFilenameModal(false);
   };
 
   if (!isPanelOpen) return null;
@@ -52,7 +63,7 @@ export function HistoryPanel() {
           <div className="flex items-center gap-2">
             {history.length > 0 && (
               <button
-                onClick={exportToPDF}
+                onClick={openFilenameModal}
                 className="p-2 rounded-md hover:bg-[var(--surface-base)] text-[var(--electric-cyan)] transition-colors"
                 title="Exportar a PDF"
               >
@@ -125,6 +136,47 @@ export function HistoryPanel() {
           </div>
         )}
       </div>
+
+      {/* Modal para nombre de archivo */}
+      {showFilenameModal && (
+        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
+          <div className="bg-[var(--surface-raised)] rounded-xl border border-[var(--border-default)] shadow-2xl w-full max-w-sm">
+            <div className="flex items-center gap-3 p-4 border-b border-[var(--border-default)]">
+              <FileText size={20} className="text-[var(--electric-cyan)]" />
+              <h3 className="font-semibold text-[var(--text-primary)]">Nombre del archivo PDF</h3>
+            </div>
+            <div className="p-4">
+              <input
+                type="text"
+                value={filename}
+                onChange={(e) => setFilename(e.target.value)}
+                placeholder="Nombre del archivo"
+                className="w-full px-3 py-2 rounded-md border border-[var(--border-default)] bg-[var(--control-bg)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--electric-cyan)] focus:ring-2 focus:ring-[var(--control-focus-ring)]"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') exportToPDF();
+                  if (e.key === 'Escape') setShowFilenameModal(false);
+                }}
+              />
+              <p className="text-xs text-[var(--text-muted)] mt-2">Sin extensión (.pdf)</p>
+            </div>
+            <div className="flex gap-2 p-4 border-t border-[var(--border-default)]">
+              <button
+                onClick={() => setShowFilenameModal(false)}
+                className="flex-1 py-2 px-4 rounded-md border border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--surface-base)] transition-colors text-sm font-medium"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={exportToPDF}
+                className="flex-1 py-2 px-4 rounded-md bg-[var(--electric-cyan)] text-white hover:bg-[#0e7490] transition-colors text-sm font-medium"
+              >
+                Descargar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
