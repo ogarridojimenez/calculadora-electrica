@@ -20,6 +20,18 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.svg",
   },
+  openGraph: {
+    title: "CalcEléc - Calculadora Eléctrica",
+    description: "Herramienta profesional de cálculo eléctrico para ingenieros. Basada en normas cubanas NC 800, NC 801, NC 802.",
+    type: "website",
+    locale: "es_ES",
+    siteName: "CalcEléc",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CalcEléc - Calculadora Eléctrica",
+    description: "Herramienta profesional de cálculo eléctrico para ingenieros. Basada en normas cubanas.",
+  },
 };
 
 export const viewport = {
