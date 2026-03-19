@@ -226,7 +226,7 @@ calculadora-electrica/
 
 ## 👨‍💻 作者
 
-**Osmel Garrido Jiménez**
+**Omar Luis Garrido Jimenez**
 
 - GitHub: [@ogarridojimenez](https://github.com/ogarridojimenez)
 

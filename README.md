@@ -226,7 +226,7 @@ Este proyecto está bajo la Licencia MIT - vea el archivo [LICENSE](LICENSE) par
 
 ## 👨‍💻 Autor
 
-**Osmel Garrido Jiménez**
+**Omar Luis Garrido Jimenez**
 
 - GitHub: [@ogarridojimenez](https://github.com/ogarridojimenez)
 
