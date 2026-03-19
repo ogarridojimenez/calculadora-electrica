@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Layers } from "lucide-react";
+import { Layers, Save } from "lucide-react";
 import { calcularSeccionConductor, type ResultadoCalculo } from "@/lib/formulas";
 import { useToast } from "@/components/ToastProvider";
+import { useHistory } from "@/components/HistoryProvider";
 
 interface Errores {
   corriente?: string;
@@ -15,6 +16,7 @@ export function CalculoSeccionConductor() {
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
   const { showToast } = useToast();
+  const { addToHistory } = useHistory();
 
   const validarCampos = (): boolean => {
     const nuevosErrores: Errores = {};
@@ -56,6 +58,24 @@ export function CalculoSeccionConductor() {
     } catch (err) {
       showToast((err as Error).message, "error");
     }
+  };
+
+  const guardarEnHistorial = () => {
+    if (!resultado) return;
+    addToHistory({
+      nombre: "Sección de Conductor",
+      tipo: "seccion-conductor",
+      inputs: {
+        corriente,
+        material,
+      },
+      resultado: {
+        valor: resultado.valor,
+        unidad: resultado.unidad,
+        formula: resultado.formula,
+      },
+    });
+    showToast("Cálculo guardado en historial", "success");
   };
 
   return (
@@ -151,6 +171,14 @@ export function CalculoSeccionConductor() {
           )}
         </div>
       )}
+
+      <button
+        onClick={guardarEnHistorial}
+        className="w-full py-2 px-4 rounded-md bg-[var(--ground-green)] text-white hover:bg-[#047857] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+      >
+        <Save size={16} />
+        Guardar en Historial
+      </button>
     </div>
   );
 }

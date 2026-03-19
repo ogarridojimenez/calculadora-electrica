@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Anchor, AlertTriangle, CheckCircle } from "lucide-react";
+import { Anchor, AlertTriangle, CheckCircle, Save } from "lucide-react";
 import { calcularPuestaTierra, calcularResistividadSuelo, type ResultadoCalculo } from "@/lib/formulas";
 import { useToast } from "@/components/ToastProvider";
+import { useHistory } from "@/components/HistoryProvider";
 
 interface Errores {
   resistividadSuelo?: string;
@@ -21,6 +22,7 @@ export function CalculoPuestaTierra() {
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
   const { showToast } = useToast();
+  const { addToHistory } = useHistory();
 
   const handleTipoSueloChange = (value: string) => {
     setTipoSuelo(value);
@@ -81,6 +83,27 @@ export function CalculoPuestaTierra() {
     } catch (err) {
       showToast((err as Error).message, "error");
     }
+  };
+
+  const guardarEnHistorial = () => {
+    if (!resultado) return;
+    addToHistory({
+      nombre: "Puesta a Tierra",
+      tipo: "puesta-tierra",
+      inputs: {
+        tipoSuelo,
+        resistividadSuelo,
+        longitudVarilla,
+        diametroVarilla,
+        numVarillas,
+      },
+      resultado: {
+        valor: resultado.valor,
+        unidad: resultado.unidad,
+        formula: resultado.formula,
+      },
+    });
+    showToast("Cálculo guardado en historial", "success");
   };
 
   return (
@@ -223,6 +246,14 @@ export function CalculoPuestaTierra() {
           )}
         </div>
       )}
+
+      <button
+        onClick={guardarEnHistorial}
+        className="w-full py-2 px-4 rounded-md bg-[var(--ground-green)] text-white hover:bg-[#047857] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+      >
+        <Save size={16} />
+        Guardar en Historial
+      </button>
     </div>
   );
 }

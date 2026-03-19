@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Calculator as CalcIcon } from "lucide-react";
+import { Calculator as CalcIcon, Save } from "lucide-react";
 import { calcularOhm, type ResultadoCalculo } from "@/lib/formulas";
 import { useToast } from "@/components/ToastProvider";
+import { useHistory } from "@/components/HistoryProvider";
 
 type CampoACalcular = "v" | "i" | "r";
 
@@ -21,6 +22,22 @@ export function CalculoOhm() {
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
   const { showToast } = useToast();
+  const { addToHistory } = useHistory();
+
+  const guardarEnHistorial = () => {
+    if (!resultado) return;
+    addToHistory({
+      nombre: "Ley de Ohm",
+      tipo: "ohm",
+      inputs: { v: v || '0', i: i || '0', r: r || '0' },
+      resultado: {
+        valor: resultado.valor,
+        unidad: resultado.unidad,
+        formula: resultado.formula,
+      },
+    });
+    showToast("Cálculo guardado en historial", "success");
+  };
 
   const validarCampos = (): boolean => {
     const nuevosErrores: Errores = {};
@@ -172,7 +189,7 @@ export function CalculoOhm() {
       {/* Resultado */}
       {resultado && (
         <div className="result-success">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-sm text-[var(--ground-green)] font-medium">
                 {labels[campoCalcular]}
@@ -187,6 +204,13 @@ export function CalculoOhm() {
               <p className="text-sm font-mono text-[var(--ground-green)]">{resultado.formula}</p>
             </div>
           </div>
+          <button
+            onClick={guardarEnHistorial}
+            className="w-full py-2 px-4 rounded-md bg-[var(--ground-green)] text-white hover:bg-[#047857] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+          >
+            <Save size={16} />
+            Guardar en Historial
+          </button>
         </div>
       )}
     </div>

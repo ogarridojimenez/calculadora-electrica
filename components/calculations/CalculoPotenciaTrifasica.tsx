@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Zap } from "lucide-react";
+import { Zap, Save } from "lucide-react";
 import { calcularPotenciaTrifasica, type ResultadoCalculo } from "@/lib/formulas";
 import { useToast } from "@/components/ToastProvider";
+import { useHistory } from "@/components/HistoryProvider";
 
 type CampoACalcular = "voltajeLinea" | "corriente" | "potencia";
 
@@ -23,6 +24,7 @@ export function CalculoPotenciaTrifasica() {
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
   const { showToast } = useToast();
+  const { addToHistory } = useHistory();
 
   const validarCampos = (): boolean => {
     const nuevosErrores: Errores = {};
@@ -81,6 +83,27 @@ export function CalculoPotenciaTrifasica() {
     } catch (err) {
       showToast((err as Error).message, "error");
     }
+  };
+
+  const guardarEnHistorial = () => {
+    if (!resultado) return;
+    addToHistory({
+      nombre: "Potencia Trifásica",
+      tipo: "potencia-trifasica",
+      inputs: {
+        campoCalcular,
+        voltajeLinea,
+        corriente,
+        potencia,
+        fp,
+      },
+      resultado: {
+        valor: resultado.valor,
+        unidad: resultado.unidad,
+        formula: resultado.formula,
+      },
+    });
+    showToast("Cálculo guardado en historial", "success");
   };
 
   const labels = {
@@ -225,6 +248,14 @@ export function CalculoPotenciaTrifasica() {
           )}
         </div>
       )}
+
+      <button
+        onClick={guardarEnHistorial}
+        className="w-full py-2 px-4 rounded-md bg-[var(--ground-green)] text-white hover:bg-[#047857] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+      >
+        <Save size={16} />
+        Guardar en Historial
+      </button>
     </div>
   );
 }

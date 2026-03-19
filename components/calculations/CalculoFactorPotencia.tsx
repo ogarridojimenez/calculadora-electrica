@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Percent } from "lucide-react";
+import { Percent, Save } from "lucide-react";
 import { calcularCorreccionFactorPotencia, type ResultadoCalculo } from "@/lib/formulas";
 import { useToast } from "@/components/ToastProvider";
+import { useHistory } from "@/components/HistoryProvider";
 
 interface Errores {
   potenciaActiva?: string;
@@ -18,6 +19,7 @@ export function CalculoFactorPotencia() {
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
   const { showToast } = useToast();
+  const { addToHistory } = useHistory();
 
   const validarCampos = (): boolean => {
     const nuevosErrores: Errores = {};
@@ -70,6 +72,25 @@ export function CalculoFactorPotencia() {
     } catch (err) {
       showToast((err as Error).message, "error");
     }
+  };
+
+  const guardarEnHistorial = () => {
+    if (!resultado) return;
+    addToHistory({
+      nombre: "Factor de Potencia",
+      tipo: "factor-potencia",
+      inputs: {
+        potenciaActiva,
+        fpActual,
+        fpDeseado,
+      },
+      resultado: {
+        valor: resultado.valor,
+        unidad: resultado.unidad,
+        formula: resultado.formula,
+      },
+    });
+    showToast("Cálculo guardado en historial", "success");
   };
 
   const calcularAngulo = (fp: number) => {
@@ -181,6 +202,14 @@ export function CalculoFactorPotencia() {
           )}
         </div>
       )}
+
+      <button
+        onClick={guardarEnHistorial}
+        className="w-full py-2 px-4 rounded-md bg-[var(--ground-green)] text-white hover:bg-[#047857] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+      >
+        <Save size={16} />
+        Guardar en Historial
+      </button>
     </div>
   );
 }

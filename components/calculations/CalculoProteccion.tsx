@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Shield } from "lucide-react";
+import { Shield, Save } from "lucide-react";
 import { calcularProteccionMagnetotermica, type ResultadoCalculo } from "@/lib/formulas";
 import { useToast } from "@/components/ToastProvider";
+import { useHistory } from "@/components/HistoryProvider";
 
 interface Errores {
   corriente?: string;
@@ -15,6 +16,7 @@ export function CalculoProteccion() {
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
   const { showToast } = useToast();
+  const { addToHistory } = useHistory();
 
   const multiplicadores = {
     general: 1.15,
@@ -59,6 +61,24 @@ export function CalculoProteccion() {
     } catch (err) {
       showToast((err as Error).message, "error");
     }
+  };
+
+  const guardarEnHistorial = () => {
+    if (!resultado) return;
+    addToHistory({
+      nombre: "Protección",
+      tipo: "proteccion",
+      inputs: {
+        corriente,
+        tipoCarga,
+      },
+      resultado: {
+        valor: resultado.valor,
+        unidad: resultado.unidad,
+        formula: resultado.formula,
+      },
+    });
+    showToast("Cálculo guardado en historial", "success");
   };
 
   return (
@@ -162,6 +182,14 @@ export function CalculoProteccion() {
           )}
         </div>
       )}
+
+      <button
+        onClick={guardarEnHistorial}
+        className="w-full py-2 px-4 rounded-md bg-[var(--ground-green)] text-white hover:bg-[#047857] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+      >
+        <Save size={16} />
+        Guardar en Historial
+      </button>
     </div>
   );
 }

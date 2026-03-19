@@ -16,6 +16,7 @@ import {
   BookOpen,
   Sun,
   Moon,
+  Clock,
 } from "lucide-react";
 import { CalculoOhm } from "./calculations/CalculoOhm";
 import { CalculoPotenciaMonofasica } from "./calculations/CalculoPotenciaMonofasica";
@@ -26,6 +27,7 @@ import { CalculoProteccion } from "./calculations/CalculoProteccion";
 import { CalculoPuestaTierra } from "./calculations/CalculoPuestaTierra";
 import { CalculoFactorPotencia } from "./calculations/CalculoFactorPotencia";
 import { useTheme } from "./ThemeProvider";
+import { useHistory } from "./HistoryProvider";
 
 type TipoCalculo =
   | "ohm"
@@ -123,6 +125,7 @@ export default function Calculator() {
   const [calculoActivo, setCalculoActivo] = useState<TipoCalculo | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { togglePanel, history } = useHistory();
 
   const opcionSeleccionada = menuItems.find((item) => item.id === calculoActivo);
 
@@ -407,6 +410,20 @@ export default function Calculator() {
           )}
         </div>
       </main>
+
+      {/* Botón flotante de historial */}
+      <button
+        onClick={togglePanel}
+        className="fixed bottom-6 right-6 z-30 w-14 h-14 rounded-full bg-[var(--electric-cyan)] text-white shadow-lg hover:bg-[#0e7490] transition-all hover:scale-105 flex items-center justify-center"
+        title="Ver historial"
+      >
+        <Clock size={24} />
+        {history.length > 0 && (
+          <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[var(--alert-red)] text-white text-xs flex items-center justify-center font-bold">
+            {history.length > 9 ? '9+' : history.length}
+          </span>
+        )}
+      </button>
     </div>
   );
 }
