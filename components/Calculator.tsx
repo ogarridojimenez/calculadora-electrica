@@ -216,7 +216,9 @@ export default function Calculator() {
                       <button
                         onClick={() => {
                           setCalculoActivo(item.id);
-                          setSidebarOpen(false);
+                          if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                            setSidebarOpen(false);
+                          }
                         }}
                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-md transition-all ${
                           calculoActivo === item.id
