@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Percent } from "lucide-react";
 import { calcularCorreccionFactorPotencia, type ResultadoCalculo } from "@/lib/formulas";
+import { useToast } from "@/components/ToastProvider";
 
 interface Errores {
   potenciaActiva?: string;
@@ -16,7 +17,7 @@ export function CalculoFactorPotencia() {
   const [fpDeseado, setFpDeseado] = useState("0.95");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
-  const [errorGeneral, setErrorGeneral] = useState("");
+  const { showToast } = useToast();
 
   const validarCampos = (): boolean => {
     const nuevosErrores: Errores = {};
@@ -50,7 +51,6 @@ export function CalculoFactorPotencia() {
   };
 
   const calcular = () => {
-    setErrorGeneral("");
     setResultado(null);
 
     if (!validarCampos()) {
@@ -66,8 +66,9 @@ export function CalculoFactorPotencia() {
       };
       const res = calcularCorreccionFactorPotencia(params);
       setResultado(res);
+      showToast("Cálculo realizado exitosamente", "success");
     } catch (err) {
-      setErrorGeneral((err as Error).message);
+      showToast((err as Error).message, "error");
     }
   };
 
@@ -157,12 +158,6 @@ export function CalculoFactorPotencia() {
         <Percent size={18} />
         Calcular Banco de Capacitores
       </button>
-
-      {errorGeneral && (
-        <div className="result-error">
-          <p className="text-sm text-[var(--alert-red)]">{errorGeneral}</p>
-        </div>
-      )}
 
       {resultado && (
         <div className="result-success">

@@ -14,6 +14,8 @@ import {
   Menu,
   Info,
   BookOpen,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { CalculoOhm } from "./calculations/CalculoOhm";
 import { CalculoPotenciaMonofasica } from "./calculations/CalculoPotenciaMonofasica";
@@ -23,6 +25,7 @@ import { CalculoSeccionConductor } from "./calculations/CalculoSeccionConductor"
 import { CalculoProteccion } from "./calculations/CalculoProteccion";
 import { CalculoPuestaTierra } from "./calculations/CalculoPuestaTierra";
 import { CalculoFactorPotencia } from "./calculations/CalculoFactorPotencia";
+import { useTheme } from "./ThemeProvider";
 
 type TipoCalculo =
   | "ohm"
@@ -119,6 +122,7 @@ const categorias = [
 export default function Calculator() {
   const [calculoActivo, setCalculoActivo] = useState<TipoCalculo | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const opcionSeleccionada = menuItems.find((item) => item.id === calculoActivo);
 
@@ -146,21 +150,30 @@ export default function Calculator() {
   };
 
   return (
-    <div className="flex h-screen bg-[var(--surface-base)]">
+    <div className="flex min-h-screen bg-[var(--surface-base)]">
       {/* Mobile Header - siempre visible en móvil */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-[var(--surface-raised)] border-b border-[var(--border-default)] flex items-center px-4 z-40">
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 rounded-md hover:bg-[var(--surface-base)] text-[var(--text-secondary)] -ml-2"
-        >
-          <Menu size={20} />
-        </button>
-        <div className="flex items-center gap-2 ml-2">
-          <div className="w-7 h-7 rounded-md bg-[var(--electric-cyan)] flex items-center justify-center">
-            <Zap size={14} color="white" strokeWidth={2} />
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-[var(--surface-raised)] border-b border-[var(--border-default)] flex items-center px-4 z-40 justify-between">
+        <div className="flex items-center">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded-md hover:bg-[var(--surface-base)] text-[var(--text-secondary)] -ml-2"
+          >
+            <Menu size={20} />
+          </button>
+          <div className="flex items-center gap-2 ml-2">
+            <div className="w-7 h-7 rounded-md bg-[var(--electric-cyan)] flex items-center justify-center">
+              <Zap size={14} color="white" strokeWidth={2} />
+            </div>
+            <span className="font-semibold text-[var(--text-primary)]">CalcEléc</span>
           </div>
-          <span className="font-semibold text-[var(--text-primary)]">CalcEléc</span>
         </div>
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-md hover:bg-[var(--surface-base)] text-[var(--text-secondary)]"
+          aria-label="Cambiar tema"
+        >
+          {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        </button>
       </div>
 
       {/* Sidebar Overlay para móvil */}
@@ -179,21 +192,32 @@ export default function Calculator() {
           sidebarOpen ? "block" : "hidden"
         } lg:block ${
           sidebarOpen ? "lg:w-64" : "lg:w-16"
-        } fixed lg:relative inset-y-0 left-0 z-30 h-full bg-[var(--surface-raised)] border-r border-[var(--border-default)] flex flex-col transition-all duration-200`}
+        } fixed lg:relative inset-y-0 left-0 z-30 h-screen lg:h-full bg-[var(--surface-raised)] border-r border-[var(--border-default)] flex flex-col transition-all duration-200`}
       >
         {/* Header */}
-        <div className="h-16 border-b border-[var(--border-default)] flex items-center px-4">
-          {sidebarOpen ? (
-            <div className="flex items-center gap-3">
+        <div className="h-16 border-b border-[var(--border-default)] flex items-center px-4 justify-between">
+          <div className="flex items-center">
+            {sidebarOpen ? (
+              <>
+                <div className="w-8 h-8 rounded-md bg-[var(--electric-cyan)] flex items-center justify-center">
+                  <Zap size={18} color="white" strokeWidth={2} />
+                </div>
+                <span className="font-semibold text-[var(--text-primary)] ml-3">CalcEléc</span>
+              </>
+            ) : (
               <div className="w-8 h-8 rounded-md bg-[var(--electric-cyan)] flex items-center justify-center">
                 <Zap size={18} color="white" strokeWidth={2} />
               </div>
-              <span className="font-semibold text-[var(--text-primary)]">CalcEléc</span>
-            </div>
-          ) : (
-            <div className="w-8 h-8 rounded-md bg-[var(--electric-cyan)] flex items-center justify-center mx-auto">
-              <Zap size={18} color="white" strokeWidth={2} />
-            </div>
+            )}
+          </div>
+          {sidebarOpen && (
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-md hover:bg-[var(--surface-base)] text-[var(--text-secondary)] transition-colors"
+              aria-label="Cambiar tema"
+            >
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
           )}
         </div>
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Cable, AlertTriangle, CheckCircle } from "lucide-react";
 import { calcularCadaTension, type ResultadoCalculo } from "@/lib/formulas";
+import { useToast } from "@/components/ToastProvider";
 
 interface Errores {
   voltaje?: string;
@@ -23,7 +24,7 @@ export function CalculoCadaTension() {
   const [fc, setFc] = useState("1");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
-  const [errorGeneral, setErrorGeneral] = useState("");
+  const { showToast } = useToast();
 
   const validarCampos = (): boolean => {
     const nuevosErrores: Errores = {};
@@ -65,7 +66,6 @@ export function CalculoCadaTension() {
   };
 
   const calcular = () => {
-    setErrorGeneral("");
     setResultado(null);
 
     if (!validarCampos()) {
@@ -83,8 +83,9 @@ export function CalculoCadaTension() {
       };
       const res = calcularCadaTension(params);
       setResultado(res);
+      showToast("Cálculo realizado exitosamente", "success");
     } catch (err) {
-      setErrorGeneral((err as Error).message);
+      showToast((err as Error).message, "error");
     }
   };
 
@@ -219,12 +220,6 @@ export function CalculoCadaTension() {
         <Cable size={18} />
         Calcular Caída de Tensión
       </button>
-
-      {errorGeneral && (
-        <div className="result-error">
-          <p className="text-sm text-[var(--alert-red)]">{errorGeneral}</p>
-        </div>
-      )}
 
       {resultado && (
         <div className={resultado.valor <= 3 ? "result-success" : resultado.valor <= 5 ? "result-warning" : "result-error"}>

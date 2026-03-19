@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Zap } from "lucide-react";
 import { calcularPotenciaTrifasica, type ResultadoCalculo } from "@/lib/formulas";
+import { useToast } from "@/components/ToastProvider";
 
 type CampoACalcular = "voltajeLinea" | "corriente" | "potencia";
 
@@ -21,7 +22,7 @@ export function CalculoPotenciaTrifasica() {
   const [fp, setFp] = useState("0.9");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
-  const [errorGeneral, setErrorGeneral] = useState("");
+  const { showToast } = useToast();
 
   const validarCampos = (): boolean => {
     const nuevosErrores: Errores = {};
@@ -61,7 +62,6 @@ export function CalculoPotenciaTrifasica() {
   };
 
   const calcular = () => {
-    setErrorGeneral("");
     setResultado(null);
 
     if (!validarCampos()) {
@@ -77,8 +77,9 @@ export function CalculoPotenciaTrifasica() {
       };
       const res = calcularPotenciaTrifasica(params);
       setResultado(res);
+      showToast("Cálculo realizado exitosamente", "success");
     } catch (err) {
-      setErrorGeneral((err as Error).message);
+      showToast((err as Error).message, "error");
     }
   };
 
@@ -121,7 +122,6 @@ export function CalculoPotenciaTrifasica() {
                   setCampoCalcular(campo);
                   setResultado(null);
                   setErrores({});
-                  setErrorGeneral("");
                 }}
                 className="sr-only"
               />
@@ -202,12 +202,6 @@ export function CalculoPotenciaTrifasica() {
         <Zap size={18} />
         Calcular
       </button>
-
-      {errorGeneral && (
-        <div className="result-error">
-          <p className="text-sm text-[var(--alert-red)]">{errorGeneral}</p>
-        </div>
-      )}
 
       {resultado && (
         <div className="result-success">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Layers } from "lucide-react";
 import { calcularSeccionConductor, type ResultadoCalculo } from "@/lib/formulas";
+import { useToast } from "@/components/ToastProvider";
 
 interface Errores {
   corriente?: string;
@@ -13,7 +14,7 @@ export function CalculoSeccionConductor() {
   const [material, setMaterial] = useState<"cobre" | "aluminio">("cobre");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
-  const [errorGeneral, setErrorGeneral] = useState("");
+  const { showToast } = useToast();
 
   const validarCampos = (): boolean => {
     const nuevosErrores: Errores = {};
@@ -35,7 +36,6 @@ export function CalculoSeccionConductor() {
   };
 
   const calcular = () => {
-    setErrorGeneral("");
     setResultado(null);
 
     if (!validarCampos()) {
@@ -52,8 +52,9 @@ export function CalculoSeccionConductor() {
       };
       const res = calcularSeccionConductor(params);
       setResultado(res);
+      showToast("Cálculo realizado exitosamente", "success");
     } catch (err) {
-      setErrorGeneral((err as Error).message);
+      showToast((err as Error).message, "error");
     }
   };
 
@@ -127,12 +128,6 @@ export function CalculoSeccionConductor() {
         <Layers size={18} />
         Calcular Sección
       </button>
-
-      {errorGeneral && (
-        <div className="result-error">
-          <p className="text-sm text-[var(--alert-red)]">{errorGeneral}</p>
-        </div>
-      )}
 
       {resultado && (
         <div className="result-success">

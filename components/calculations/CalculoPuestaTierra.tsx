@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Anchor, AlertTriangle, CheckCircle } from "lucide-react";
 import { calcularPuestaTierra, calcularResistividadSuelo, type ResultadoCalculo } from "@/lib/formulas";
+import { useToast } from "@/components/ToastProvider";
 
 interface Errores {
   resistividadSuelo?: string;
@@ -19,7 +20,7 @@ export function CalculoPuestaTierra() {
   const [numVarillas, setNumVarillas] = useState("1");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
-  const [errorGeneral, setErrorGeneral] = useState("");
+  const { showToast } = useToast();
 
   const handleTipoSueloChange = (value: string) => {
     setTipoSuelo(value);
@@ -61,7 +62,6 @@ export function CalculoPuestaTierra() {
   };
 
   const calcular = () => {
-    setErrorGeneral("");
     setResultado(null);
 
     if (!validarCampos()) {
@@ -77,8 +77,9 @@ export function CalculoPuestaTierra() {
       };
       const res = calcularPuestaTierra(params);
       setResultado(res);
+      showToast("Cálculo realizado exitosamente", "success");
     } catch (err) {
-      setErrorGeneral((err as Error).message);
+      showToast((err as Error).message, "error");
     }
   };
 
@@ -194,12 +195,6 @@ export function CalculoPuestaTierra() {
         <Anchor size={18} />
         Calcular Puesta a Tierra
       </button>
-
-      {errorGeneral && (
-        <div className="result-error">
-          <p className="text-sm text-[var(--alert-red)]">{errorGeneral}</p>
-        </div>
-      )}
 
       {resultado && (
         <div className={resultado.valor <= 25 ? "result-success" : "result-error"}>

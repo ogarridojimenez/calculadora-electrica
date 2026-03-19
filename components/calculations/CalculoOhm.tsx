@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Calculator as CalcIcon } from "lucide-react";
 import { calcularOhm, type ResultadoCalculo } from "@/lib/formulas";
+import { useToast } from "@/components/ToastProvider";
 
 type CampoACalcular = "v" | "i" | "r";
 
@@ -19,7 +20,7 @@ export function CalculoOhm() {
   const [r, setR] = useState("");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
-  const [errorGeneral, setErrorGeneral] = useState("");
+  const { showToast } = useToast();
 
   const validarCampos = (): boolean => {
     const nuevosErrores: Errores = {};
@@ -64,10 +65,10 @@ export function CalculoOhm() {
   };
 
   const calcular = () => {
-    setErrorGeneral("");
     setResultado(null);
 
     if (!validarCampos()) {
+      showToast("Verifique los campos ingresados", "error");
       return;
     }
 
@@ -79,8 +80,9 @@ export function CalculoOhm() {
       };
       const res = calcularOhm(params);
       setResultado(res);
+      showToast("Cálculo realizado con éxito", "success");
     } catch (err) {
-      setErrorGeneral((err as Error).message);
+      showToast((err as Error).message, "error");
     }
   };
 
@@ -126,7 +128,6 @@ export function CalculoOhm() {
                   setCampoCalcular(campo);
                   setResultado(null);
                   setErrores({});
-                  setErrorGeneral("");
                 }}
                 className="sr-only"
               />
@@ -167,13 +168,6 @@ export function CalculoOhm() {
         <CalcIcon size={18} />
         Calcular
       </button>
-
-      {/* Error general */}
-      {errorGeneral && (
-        <div className="result-error">
-          <p className="text-sm text-[var(--alert-red)]">{errorGeneral}</p>
-        </div>
-      )}
 
       {/* Resultado */}
       {resultado && (
