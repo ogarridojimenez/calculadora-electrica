@@ -171,11 +171,15 @@ export default function Calculator() {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - oculto en móvil, visible en desktop */}
       <aside
         className={`${
-          sidebarOpen ? "w-64" : "w-16"
-        } fixed lg:relative z-30 lg:z-auto h-full bg-[var(--surface-raised)] border-r border-[var(--border-default)] flex flex-col transition-all duration-200`}
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 ${
+          sidebarOpen ? "block" : "hidden"
+        } lg:block ${
+          sidebarOpen ? "lg:w-64" : "lg:w-16"
+        } fixed lg:relative inset-y-0 left-0 z-30 h-full bg-[var(--surface-raised)] border-r border-[var(--border-default)] flex flex-col transition-all duration-200`}
       >
         {/* Header */}
         <div className="h-16 border-b border-[var(--border-default)] flex items-center px-4">
