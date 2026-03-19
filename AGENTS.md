@@ -249,6 +249,11 @@ calculadora-electrica/
 │   └── page.tsx            # Home page (imports Calculator)
 ├── components/
 │   ├── Calculator.tsx      # Main component with sidebar
+│   ├── ThemeProvider.tsx    # Dark/light mode context
+│   ├── ToastProvider.tsx    # Toast notifications
+│   ├── HistoryProvider.tsx # History state management
+│   ├── HistoryPanel.tsx    # History panel UI
+│   ├── PWAUpdater.tsx      # Service worker registration
 │   └── calculations/       # Individual calculation modules
 │       ├── CalculoOhm.tsx
 │       ├── CalculoPotenciaMonofasica.tsx
@@ -260,6 +265,13 @@ calculadora-electrica/
 │       └── CalculoFactorPotencia.tsx
 ├── lib/
 │   └── formulas.ts         # Core calculation logic
+├── public/
+│   ├── manifest.json       # PWA manifest
+│   ├── sw.js               # Service worker for offline support
+│   └── icons/              # PWA icons (192x192, 512x512)
+├── .github/
+│   └── workflows/
+│       └── ci.yml          # GitHub Actions CI/CD
 ├── __tests__/
 │   └── lib/
 │       └── formulas.test.ts

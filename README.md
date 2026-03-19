@@ -36,10 +36,15 @@
 - **8 Calculadoras Especializadas**: Ley de Ohm, Potencia Monofásica/Trifásica, Caída de Tensión, Sección de Conductor, Protección, Puesta a Tierra, Factor de Potencia
 - **Validación de Entradas**: Validación robusta de todos los campos de entrada
 - **Diseño Responsivo**: Adaptado para escritorio y dispositivos móviles
+- **PWA (Progressive Web App)**: Instálala en tu móvil como app nativa
+- **Modo Oscuro**: Tema claro/oscuro con persistencia
 - **Interface Profesional**: Diseño moderno orientado a ingenieros eléctricos
+- **Notificaciones Toast**: Feedback visual de cálculos realizados
+- **Historial**: Guarda y exporta cálculos en PDF
 - **Normas Cubanas**: Implementación fiel de las normas NC eléctricas
 - **Código TypeScript**: Tipado estático para mayor seguridad y mantenibilidad
 - **Unit Tests**: 27+ pruebas unitarias para funciones de cálculo
+- **CI/CD**: GitHub Actions para integración continua
 
 ---
 
