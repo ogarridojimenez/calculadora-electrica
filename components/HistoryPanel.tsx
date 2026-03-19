@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import { X, Trash2, Download, Clock, Calculator, FileText } from 'lucide-react';
-import { useHistory, type HistoryItem } from './HistoryProvider';
+import { useHistory } from './HistoryProvider';
 
 export function HistoryPanel() {
   const { history, removeFromHistory, clearHistory, isPanelOpen, setPanelOpen } = useHistory();
   const [showFilenameModal, setShowFilenameModal] = useState(false);
   const [filename, setFilename] = useState('');
 
-  const formatInputs = (inputs: Record<string, string | number>, tipo: string) => {
+  const formatInputs = (inputs: Record<string, string | number>) => {
     const entries = Object.entries(inputs);
     return entries
       .filter(([key]) => key !== 'tipo')
@@ -111,7 +111,7 @@ export function HistoryPanel() {
                   </div>
                   <h3 className="font-medium text-[var(--text-primary)] mb-1">{item.nombre}</h3>
                   <p className="text-xs text-[var(--text-tertiary)] mb-2">
-                    {formatInputs(item.inputs, item.tipo)}
+                    {formatInputs(item.inputs)}
                   </p>
                   <div className="flex items-center gap-2">
                     <span className="text-lg font-bold text-[var(--ground-green)]">

@@ -30,20 +30,19 @@ const HistoryContext = createContext<HistoryContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'calcelec-history';
 
-export function HistoryProvider({ children }: { children: ReactNode }) {
-  const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
-
-  useEffect(() => {
+function getInitialHistory(): HistoryItem[] {
+  if (typeof window === 'undefined') return [];
+  try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        setHistory(JSON.parse(saved));
-      } catch {
-        setHistory([]);
-      }
-    }
-  }, []);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function HistoryProvider({ children }: { children: ReactNode }) {
+  const [history, setHistory] = useState<HistoryItem[]>(getInitialHistory);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
