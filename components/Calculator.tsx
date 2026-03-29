@@ -416,7 +416,7 @@ export default function Calculator() {
               {/* Quick Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
                 {[
-                  { label: "Cálculos", value: "8", color: "var(--electric-cyan)" },
+                  { label: "Cálculos", value: "14", color: "var(--electric-cyan)" },
                   { label: "Normas", value: "5", color: "var(--ground-green)" },
                   { label: "Categorías", value: "3", color: "var(--warning-amber)" },
                   { label: "Validaciones", value: "✓", color: "var(--electric-cyan)" },
