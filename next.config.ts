@@ -33,6 +33,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['jspdf', 'jspdf-autotable', 'fflate'],
+  experimental: {
+    cssChunking: false,
+  },
   async headers() {
     return [
       {
