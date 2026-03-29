@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![CalcEléc Logo](https://img.shields.io/badge/CalcEléc-Calculadora_Eléctrica-0891b2?style=for-the-badge&logo=electrical&logoColor=white)
+![CalcEléc logo](https://img.shields.io/badge/CalcEléc-Calculadora_Eléctrica-0891b2?style=for-the-badge&logo=electrical&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-16.2.0-black?style=flat-square&logo=next.js&logoColor=white)
 ![React](https://img.shields.io/badge/React-19.2.4-61dafb?style=flat-square&logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=flat-square&logo=typescript&logoColor=white)
@@ -33,18 +33,22 @@
 
 ## ✨ Características
 
-- **8 Calculadoras Especializadas**: Ley de Ohm, Potencia Monofásica/Trifásica, Caída de Tensión, Sección de Conductor, Protección, Puesta a Tierra, Factor de Potencia
-- **Validación de Entradas**: Validación robusta de todos los campos de entrada
-- **Diseño Responsivo**: Adaptado para escritorio y dispositivos móviles
-- **PWA (Progressive Web App)**: Instálala en tu móvil como app nativa
-- **Modo Oscuro**: Tema claro/oscuro con persistencia
-- **Interface Profesional**: Diseño moderno orientado a ingenieros eléctricos
-- **Notificaciones Toast**: Feedback visual de cálculos realizados
-- **Historial**: Guarda y exporta cálculos en PDF
-- **Normas Cubanas**: Implementación fiel de las normas NC eléctricas
-- **Código TypeScript**: Tipado estático para mayor seguridad y mantenibilidad
-- **Unit Tests**: 27+ pruebas unitarias para funciones de cálculo
-- **CI/CD**: GitHub Actions para integración continua
+- **14 Calculadoras Especializadas** - La suite más completa de cálculo eléctrico
+- **Validación de Entradas** - Validación robusta de todos los campos de entrada
+- **Diseño Responsivo** - Adaptado para escritorio y dispositivos móviles
+- **PWA (Progressive Web App)** - Instálala en tu móvil como app nativa
+- **Modo Oscuro** - Tema claro/oscuro con persistencia
+- **Interface Profesional** - Diseño moderno orientado a ingenieros eléctricos
+- **Notificaciones Toast** - Feedback visual de cálculos realizados
+- **Historial** - Guarda y exporta cálculos en PDF con nombre personalizado
+- **Normas Cubanas** - Implementación fiel de las normas NC eléctricas
+- **Factores de Corrección** - Temperatura y agrupación de conductores
+- **Indicadores de Cumplimiento** - Visualización clara de cumplimiento normativo
+- **Código TypeScript** - Tipado estático para mayor seguridad y mantenibilidad
+- **Unit Tests** - 27+ pruebas unitarias para funciones de cálculo
+- **CI/CD** - GitHub Actions para integración continua
+- **Security Headers** - Headers HTTP de seguridad configurados
+- **TypeScript Estricto** - Sin `any`, sin `@ts-ignore`
 
 ---
 
@@ -52,26 +56,31 @@
 
 ### Cálculos Básicos
 
-| Cálculo | Fórmula | Descripción |
-|---------|---------|-------------|
-| **Ley de Ohm** | V = I × R | Cálculo de Voltaje, Corriente o Resistencia |
-| **Potencia Monofásica** | P = V × I × cos(φ) | Sistemas residenciales y comerciales |
-| **Potencia Trifásica** | P = √3 × V_L × I × cos(φ) | Sistemas industriales trifásicos |
-| **Factor de Potencia** | Qc = P(tanφ₁ - tanφ₂) | Corrección del factor de potencia |
+| Cálculo | Fórmula | Descripción | Norma |
+|---------|---------|-------------|-------|
+| **Ley de Ohm** | V = I × R | Cálculo de Voltaje, Corriente o Resistencia | - |
+| **Potencia Monofásica** | P = V × I × cos(φ) | Sistemas residenciales y comerciales | NC 800 |
+| **Potencia Trifásica** | P = √3 × V_L × I × cos(φ) | Sistemas industriales trifásicos | NC 800 |
+| **Factor de Potencia** | Qc = P(tanφ₁ - tanφ₂) | Corrección del factor de potencia | - |
+| **Motor Eléctrico** | I_n = P/(√3×V_L×η×cosφ) | Corriente nominal, arranque, protección | NC 804 |
 
 ### Distribución
 
-| Cálculo | Fórmula | Descripción |
-|---------|---------|-------------|
-| **Caída de Tensión** | ΔV = 2KIL/S | Verificación ≤3% iluminación, ≤5% fuerza |
-| **Sección de Conductor** | S = IL/(K×cosφ) | K=56 Cu, K=35 Al (30°C) |
+| Cálculo | Fórmula | Descripción | Norma |
+|---------|---------|-------------|-------|
+| **Caída de Tensión** | ΔV = 2KIL/S | Verificación ≤3% iluminación, ≤5% fuerza | NC 800 |
+| **Sección de Conductor** | S = IL/(K×cosφ) | K=56 Cu, K=35 Al (30°C) | NC 800 |
+| **Iluminación** | Φ = (E×A)/(η×fm) | Flujo luminoso, número de luminarias | NC 803 |
+| **Demanda Máxima** | D = Σ(P×fd)/fp | Método detallado y residencial simplificado | NC 800 |
+| **Canalización** | %Ocup = ΣAcond/Atubo | Verificación de ocupación de tubos | NC 800 |
 
 ### Protección
 
-| Cálculo | Fórmula | Descripción |
-|---------|---------|-------------|
-| **Protección Magnetotérmica** | I_n = 1.25 × I_c | Interruptores según NC 801 |
-| **Puesta a Tierra** | R ≤ 25Ω | Resistencia según NC 802 |
+| Cálculo | Fórmula | Descripción | Norma |
+|---------|---------|-------------|-------|
+| **Protección Magnetotérmica** | I_n = 1.25 × I_c | Interruptores según NC 801 | NC 801 |
+| **Puesta a Tierra** | R ≤ 25Ω | Resistencia según NC 802 | NC 802 |
+| **Cortocircuito** | Icc = V/(√3×Z) | Icc trifásico/monofásico, poder de corte | NC 801 |
 
 ---
 
@@ -79,10 +88,10 @@
 
 | Norma | Título | Aplicación |
 |-------|--------|------------|
-| **NC 800** | Instalaciones eléctricas en baja tensión | Dimensionamiento de conductores, caída de tensión, potencia |
-| **NC 801** | Protecciones en instalaciones eléctricas | Interruptores magnetotérmicos, coordinación de protecciones |
+| **NC 800** | Instalaciones eléctricas en baja tensión | Dimensionamiento de conductores, caída de tensión, potencia, demanda |
+| **NC 801** | Protecciones en instalaciones eléctricas | Interruptores magnetotérmicos, cortocircuito |
 | **NC 802** | Sistemas de puesta a tierra | Resistencia de puesta a tierra ≤25Ω |
-| **NC 803** | Alumbrado eléctrico | Cálculos de iluminación |
+| **NC 803** | Alumbrado eléctrico | Cálculos de iluminación de interiores |
 | **NC 804** | Motores eléctricos | Dimensionamiento de circuitos de motores |
 
 ---
@@ -168,12 +177,17 @@ npm run test:coverage
 ```
 calculadora-electrica/
 ├── app/
-│   ├── globals.css         # Estilos globales y variables CSS
-│   ├── layout.tsx          # Layout raíz de la aplicación
-│   └── page.tsx            # Página principal
+│   ├── globals.css           # Estilos globales y variables CSS
+│   ├── layout.tsx            # Layout raíz de la aplicación
+│   └── page.tsx              # Página principal
 ├── components/
-│   ├── Calculator.tsx       # Componente principal con navegación
-│   └── calculations/       # Módulos de cálculo individuales
+│   ├── Calculator.tsx        # Componente principal con navegación
+│   ├── ThemeProvider.tsx    # Proveedor de tema oscuro
+│   ├── ToastProvider.tsx     # Proveedor de notificaciones
+│   ├── HistoryProvider.tsx   # Proveedor de historial
+│   ├── HistoryPanel.tsx     # Panel de historial
+│   ├── PWAUpdater.tsx        # Registro de service worker
+│   └── calculations/         # Módulos de cálculo individuales
 │       ├── CalculoOhm.tsx
 │       ├── CalculoPotenciaMonofasica.tsx
 │       ├── CalculoPotenciaTrifasica.tsx
@@ -181,17 +195,34 @@ calculadora-electrica/
 │       ├── CalculoSeccionConductor.tsx
 │       ├── CalculoProteccion.tsx
 │       ├── CalculoPuestaTierra.tsx
-│       └── CalculoFactorPotencia.tsx
+│       ├── CalculoFactorPotencia.tsx
+│       ├── CalculoIluminacion.tsx    # NC 803
+│       ├── CalculoMotor.tsx           # NC 804
+│       ├── CalculoCortocircuito.tsx    # NC 801
+│       ├── CalculoDemanda.tsx          # NC 800
+│       └── CalculoCanalizacion.tsx    # NC 800
 ├── lib/
-│   └── formulas.ts         # Lógica de cálculos eléctricos
+│   ├── formulas.ts           # Lógica de cálculos eléctricos
+│   ├── pdfExport.tsx         # Exportación a PDF
+│   └── constants/
+│       └── normas-cubanas.ts  # Constantes normativas
+├── types/
+│   └── electrical.ts          # Tipos TypeScript
+├── public/
+│   ├── manifest.json         # Manifiesto PWA
+│   ├── sw.js                 # Service worker
+│   └── icons/                # Iconos PWA
+├── .github/
+│   └── workflows/
+│       └── ci.yml            # GitHub Actions CI/CD
 ├── __tests__/
 │   └── lib/
 │       └── formulas.test.ts  # Pruebas unitarias
-├── jest.config.js          # Configuración de Jest
-├── jest.setup.ts           # Setup de Jest
-├── next.config.ts          # Configuración de Next.js
-├── tailwind.config.ts      # Configuración de Tailwind
-├── tsconfig.json           # Configuración de TypeScript
+├── jest.config.js
+├── jest.setup.ts
+├── next.config.ts
+├── tailwind.config.ts
+├── tsconfig.json
 └── package.json
 ```
 
@@ -207,7 +238,35 @@ calculadora-electrica/
 | [Tailwind CSS 4](https://tailwindcss.com/) | Framework CSS |
 | [Lucide React](https://lucide.dev/) | Biblioteca de iconos |
 | [Jest](https://jestjs.io/) | Framework de testing |
-| [React Testing Library](https://testing-library.com/) | Testing de componentes |
+| [jsPDF](https://jspdf.github.io/) | Generación de PDFs |
+
+---
+
+## 📊 Resumen de Funcionalidades
+
+### Módulos de Cálculo (14 total)
+
+1. **Ley de Ohm** - V, I, R
+2. **Potencia Monofásica** - P = V × I × cos(φ)
+3. **Potencia Trifásica** - P = √3 × V_L × I × cos(φ)
+4. **Caída de Tensión** - Verificación normativa NC 800
+5. **Sección de Conductor** - Dimensionamiento K=56/35
+6. **Protección Magnetotérmica** - Interruptores NC 801
+7. **Puesta a Tierra** - R ≤ 25Ω NC 802
+8. **Factor de Potencia** - Banco de capacitores
+9. **Iluminación (NC 803)** - Flujo, luminarias, índice local
+10. **Motor Eléctrico (NC 804)** - Nominal, arranque, protección
+11. **Cortocircuito (NC 801)** - Icc trifásico/monofásico
+12. **Demanda Máxima (NC 800)** - Método detallado y residencial
+13. **Canalización (NC 800)** - Ocupación de tubos
+
+### Características Técnicas
+
+- Constantes normativas centralizadas en `/lib/constants/`
+- Tipos TypeScript especializados en `/types/`
+- Factores de corrección (temperatura, agrupación)
+- Secciones normalizadas cubanas
+- Tablas de iluminación por tipo de local
 
 ---
 

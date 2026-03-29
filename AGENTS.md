@@ -150,6 +150,30 @@ All electrical formulas are in `lib/formulas.ts`:
 | Protection | I_n = 1.25 × I_c | NC 801 |
 | Grounding | R ≤ 25Ω | NC 802 |
 | Power Factor | Qc = P(tanφ1 - tanφ2) | Correction |
+| Ilumination | Φ = (E×A)/(η×fm) | NC 803 |
+| Motor Current | I_n = P/(√3×V_L×η×cosφ) | NC 804 |
+| Short Circuit | Icc = V/(√3×Z) | NC 801 |
+| Maximum Demand | D = Σ(P×fd)/fp | NC 800 |
+| Conduit Occupancy | %Ocup = ΣAcond/Atubo | NC 800 |
+
+### Constants
+
+All NC constants are centralized in `lib/constants/normas-cubanas.ts`:
+
+- NC_800: CAIDA_TENSION, RESISTIVIDAD, FACTORES_DEMANDA
+- NC_801: PROTECCION_THERMAL_FACTOR, PODER_CORTE_STANDARD
+- NC_802: RESISTENCIA_TIERRA_MAX, CONDUCTOR_PE rules
+- NC_803: TIPOS_LOCALES (iluminancia por tipo de local)
+- NC_804: FACTOR_ARRANQUE types
+
+### Types
+
+All TypeScript types are in `types/electrical.ts`:
+
+- Material: 'Cu' | 'Al'
+- Sistema: 'monofasico' | 'trifasico'
+- TipoArranque: 'directo' | 'estrella-triangulo' | 'variador'
+- EstadoCumplimiento: 'cumple' | 'limite' | 'no_cumple'
 
 ### Calculation Component Pattern
 
@@ -244,17 +268,17 @@ import '@testing-library/jest-dom'
 ```
 calculadora-electrica/
 ├── app/
-│   ├── globals.css         # CSS tokens, Tailwind styles
-│   ├── layout.tsx          # Root layout (Spanish metadata)
-│   └── page.tsx            # Home page (imports Calculator)
+│   ├── globals.css           # CSS tokens, Tailwind styles
+│   ├── layout.tsx            # Root layout (Spanish metadata)
+│   └── page.tsx              # Home page (imports Calculator)
 ├── components/
-│   ├── Calculator.tsx      # Main component with sidebar
+│   ├── Calculator.tsx        # Main component with sidebar
 │   ├── ThemeProvider.tsx    # Dark/light mode context
-│   ├── ToastProvider.tsx    # Toast notifications
-│   ├── HistoryProvider.tsx # History state management
-│   ├── HistoryPanel.tsx    # History panel UI
-│   ├── PWAUpdater.tsx      # Service worker registration
-│   └── calculations/       # Individual calculation modules
+│   ├── ToastProvider.tsx     # Toast notifications
+│   ├── HistoryProvider.tsx   # History state management
+│   ├── HistoryPanel.tsx     # History panel UI
+│   ├── PWAUpdater.tsx       # Service worker registration
+│   └── calculations/         # Individual calculation modules
 │       ├── CalculoOhm.tsx
 │       ├── CalculoPotenciaMonofasica.tsx
 │       ├── CalculoPotenciaTrifasica.tsx
@@ -262,16 +286,26 @@ calculadora-electrica/
 │       ├── CalculoSeccionConductor.tsx
 │       ├── CalculoProteccion.tsx
 │       ├── CalculoPuestaTierra.tsx
-│       └── CalculoFactorPotencia.tsx
+│       ├── CalculoFactorPotencia.tsx
+│       ├── CalculoIluminacion.tsx     # NC 803
+│       ├── CalculoMotor.tsx            # NC 804
+│       ├── CalculoCortocircuito.tsx   # NC 801
+│       ├── CalculoDemanda.tsx         # NC 800
+│       └── CalculoCanalizacion.tsx     # NC 800
 ├── lib/
-│   └── formulas.ts         # Core calculation logic
+│   ├── formulas.ts           # Core calculation logic
+│   ├── pdfExport.tsx        # PDF export
+│   └── constants/
+│       └── normas-cubanas.ts # NC constants
+├── types/
+│   └── electrical.ts         # TypeScript types
 ├── public/
-│   ├── manifest.json       # PWA manifest
-│   ├── sw.js               # Service worker for offline support
-│   └── icons/              # PWA icons (192x192, 512x512)
+│   ├── manifest.json         # PWA manifest
+│   ├── sw.js                 # Service worker for offline support
+│   └── icons/                # PWA icons (192x192, 512x512)
 ├── .github/
 │   └── workflows/
-│       └── ci.yml          # GitHub Actions CI/CD
+│       └── ci.yml            # GitHub Actions CI/CD
 ├── __tests__/
 │   └── lib/
 │       └── formulas.test.ts
@@ -280,8 +314,27 @@ calculadora-electrica/
 ├── next.config.ts
 ├── tailwind.config.ts
 ├── tsconfig.json
+├── vercel.json              # Security headers
 └── package.json
 ```
+
+## Calculation Modules
+
+| Module | File | Norma | Description |
+|--------|------|-------|-------------|
+| Ley de Ohm | CalculoOhm.tsx | - | V, I, R |
+| Potencia Monofásica | CalculoPotenciaMonofasica.tsx | NC 800 | P = V × I × cos(φ) |
+| Potencia Trifásica | CalculoPotenciaTrifasica.tsx | NC 800 | P = √3 × V_L × I × cos(φ) |
+| Caída de Tensión | CalculoCadaTension.tsx | NC 800 | ΔV ≤ 3%/5% |
+| Sección Conductor | CalculoSeccionConductor.tsx | NC 800 | S = I/K |
+| Protección | CalculoProteccion.tsx | NC 801 | I_n = 1.25 × I_c |
+| Puesta a Tierra | CalculoPuestaTierra.tsx | NC 802 | R ≤ 25Ω |
+| Factor Potencia | CalculoFactorPotencia.tsx | - | Qc = P(tanφ1 - tanφ2) |
+| Iluminación | CalculoIluminacion.tsx | NC 803 | Φ, N luminarias, k |
+| Motor | CalculoMotor.tsx | NC 804 | I_n, I_arr, protección |
+| Cortocircuito | CalculoCortocircuito.tsx | NC 801 | Icc 3φ/1φ |
+| Demanda | CalculoDemanda.tsx | NC 800 | D_max, acometida |
+| Canalización | CalculoCanalizacion.tsx | NC 800 | % ocupación tubo |
 
 ## What to Avoid
 
