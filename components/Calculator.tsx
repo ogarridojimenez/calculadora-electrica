@@ -26,6 +26,11 @@ import { CalculoSeccionConductor } from "./calculations/CalculoSeccionConductor"
 import { CalculoProteccion } from "./calculations/CalculoProteccion";
 import { CalculoPuestaTierra } from "./calculations/CalculoPuestaTierra";
 import { CalculoFactorPotencia } from "./calculations/CalculoFactorPotencia";
+import { CalculoIluminacion } from "./calculations/CalculoIluminacion";
+import { CalculoMotor } from "./calculations/CalculoMotor";
+import { CalculoCortocircuito } from "./calculations/CalculoCortocircuito";
+import { CalculoDemanda } from "./calculations/CalculoDemanda";
+import { CalculoCanalizacion } from "./calculations/CalculoCanalizacion";
 import { useTheme } from "./ThemeProvider";
 import { useHistory } from "./HistoryProvider";
 
@@ -37,7 +42,12 @@ type TipoCalculo =
   | "seccion-conductor"
   | "proteccion"
   | "puesta-tierra"
-  | "factor-potencia";
+  | "factor-potencia"
+  | "iluminacion"
+  | "motor"
+  | "cortocircuito"
+  | "demanda"
+  | "canalizacion";
 
 interface OpcionMenu {
   id: TipoCalculo;
@@ -113,6 +123,46 @@ const menuItems: OpcionMenu[] = [
     norma: "",
     categoria: "basico",
   },
+  {
+    id: "iluminacion",
+    titulo: "Iluminación",
+    descripcion: "NC 803",
+    icono: <Sun size={20} strokeWidth={1.5} />,
+    norma: "NC 803",
+    categoria: "distribucion",
+  },
+  {
+    id: "motor",
+    titulo: "Motor Eléctrico",
+    descripcion: "NC 804",
+    icono: <Zap size={20} strokeWidth={1.5} />,
+    norma: "NC 804",
+    categoria: "basico",
+  },
+  {
+    id: "cortocircuito",
+    titulo: "Cortocircuito",
+    descripcion: "NC 801",
+    icono: <Gauge size={20} strokeWidth={1.5} />,
+    norma: "NC 801",
+    categoria: "proteccion",
+  },
+  {
+    id: "demanda",
+    titulo: "Demanda Máxima",
+    descripcion: "NC 800",
+    icono: <Gauge size={20} strokeWidth={1.5} />,
+    norma: "NC 800",
+    categoria: "distribucion",
+  },
+  {
+    id: "canalizacion",
+    titulo: "Canalización",
+    descripcion: "NC 800",
+    icono: <Cable size={20} strokeWidth={1.5} />,
+    norma: "NC 800",
+    categoria: "distribucion",
+  },
 ];
 
 const categorias = [
@@ -147,6 +197,16 @@ export default function Calculator() {
         return <CalculoPuestaTierra />;
       case "factor-potencia":
         return <CalculoFactorPotencia />;
+      case "iluminacion":
+        return <CalculoIluminacion />;
+      case "motor":
+        return <CalculoMotor />;
+      case "cortocircuito":
+        return <CalculoCortocircuito />;
+      case "demanda":
+        return <CalculoDemanda />;
+      case "canalizacion":
+        return <CalculoCanalizacion />;
       default:
         return null;
     }
