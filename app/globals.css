@@ -1,10 +1,15 @@
 @import "tailwindcss";
 
 :root {
+  /* Typography */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  
   /* Surface Elevation - Technical/Industrial */
   --surface-base: #f8fafc;
   --surface-raised: #ffffff;
   --surface-overlay: #ffffff;
+  --surface-backdrop: rgba(255, 255, 255, 0.8);
   
   /* Text Hierarchy */
   --text-primary: #0f172a;
@@ -43,6 +48,8 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px rgba(8, 145, 178, 0.2);
   
   /* Spacing Scale (base: 4px) */
   --space-1: 4px;
@@ -67,6 +74,7 @@
   --surface-base: #0f172a;
   --surface-raised: #1e293b;
   --surface-overlay: #334155;
+  --surface-backdrop: rgba(15, 23, 42, 0.85);
   
   --text-primary: #f1f5f9;
   --text-secondary: #cbd5e1;
@@ -100,13 +108,15 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(34, 211, 238, 0.3);
 }
 
 @theme inline {
   --color-background: var(--surface-base);
   --color-foreground: var(--text-primary);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 * {
@@ -116,7 +126,7 @@
 body {
   background: var(--surface-base);
   color: var(--text-primary);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -185,8 +195,27 @@ select:disabled {
   border-radius: var(--radius-sm);
   font-weight: 500;
   font-size: 14px;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.btn:hover::before {
+  opacity: 1;
+}
+
+.btn:active {
+  transform: scale(0.98);
 }
 
 .btn-primary {
@@ -197,10 +226,12 @@ select:disabled {
 
 .btn-primary:hover {
   background: #0e7490;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.4);
 }
 
 .btn-primary:active {
   background: #155e75;
+  box-shadow: 0 2px 4px rgba(8, 145, 178, 0.3);
 }
 
 .btn-ghost {
@@ -361,6 +392,54 @@ select:disabled {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.2s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, 
+    var(--border-default) 25%, 
+    var(--surface-raised) 50%, 
+    var(--border-default) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Backdrop blur utility */
+.backdrop-blur-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Focus ring animation */
+.focus-ring {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.focus-ring:focus {
+  box-shadow: 0 0 0 3px var(--control-focus-ring);
 }

@@ -17,6 +17,10 @@ import {
   Sun,
   Moon,
   Clock,
+  Cpu,
+  Radio,
+  ClipboardList,
+  Box,
 } from "lucide-react";
 import { CalculoOhm } from "./calculations/CalculoOhm";
 import { CalculoPotenciaMonofasica } from "./calculations/CalculoPotenciaMonofasica";
@@ -54,6 +58,7 @@ interface OpcionMenu {
   titulo: string;
   descripcion: string;
   icono: React.ReactNode;
+  iconoCollapsed: string;
   norma: string;
   categoria: "basico" | "distribucion" | "proteccion";
 }
@@ -64,6 +69,7 @@ const menuItems: OpcionMenu[] = [
     titulo: "Ley de Ohm",
     descripcion: "V, I, R",
     icono: <CircleDot size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "Ω",
     norma: "",
     categoria: "basico",
   },
@@ -72,6 +78,7 @@ const menuItems: OpcionMenu[] = [
     titulo: "Potencia Monofásica",
     descripcion: "P = V × I × cos(φ)",
     icono: <Gauge size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "P¹",
     norma: "NC 800",
     categoria: "basico",
   },
@@ -80,6 +87,7 @@ const menuItems: OpcionMenu[] = [
     titulo: "Potencia Trifásica",
     descripcion: "P = √3 × V_L × I × cos(φ)",
     icono: <Zap size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "P³",
     norma: "NC 800",
     categoria: "basico",
   },
@@ -88,6 +96,7 @@ const menuItems: OpcionMenu[] = [
     titulo: "Caída de Tensión",
     descripcion: "Verificación 3% / 5%",
     icono: <Cable size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "ΔV",
     norma: "NC 800",
     categoria: "distribucion",
   },
@@ -96,6 +105,7 @@ const menuItems: OpcionMenu[] = [
     titulo: "Sección Conductor",
     descripcion: "Dimensionamiento",
     icono: <Layers size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "mm²",
     norma: "NC 800",
     categoria: "distribucion",
   },
@@ -104,6 +114,7 @@ const menuItems: OpcionMenu[] = [
     titulo: "Protección",
     descripcion: "Interruptor magnetotérmico",
     icono: <Shield size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "In",
     norma: "NC 801",
     categoria: "proteccion",
   },
@@ -112,6 +123,7 @@ const menuItems: OpcionMenu[] = [
     titulo: "Puesta a Tierra",
     descripcion: "R ≤ 25 Ω",
     icono: <Anchor size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "⏚",
     norma: "NC 802",
     categoria: "proteccion",
   },
@@ -120,6 +132,7 @@ const menuItems: OpcionMenu[] = [
     titulo: "Factor de Potencia",
     descripcion: "Banco de capacitores",
     icono: <Percent size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "FP",
     norma: "",
     categoria: "basico",
   },
@@ -128,6 +141,7 @@ const menuItems: OpcionMenu[] = [
     titulo: "Iluminación",
     descripcion: "NC 803",
     icono: <Sun size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "lux",
     norma: "NC 803",
     categoria: "distribucion",
   },
@@ -135,7 +149,8 @@ const menuItems: OpcionMenu[] = [
     id: "motor",
     titulo: "Motor Eléctrico",
     descripcion: "NC 804",
-    icono: <Zap size={20} strokeWidth={1.5} />,
+    icono: <Cpu size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "HP",
     norma: "NC 804",
     categoria: "basico",
   },
@@ -143,7 +158,8 @@ const menuItems: OpcionMenu[] = [
     id: "cortocircuito",
     titulo: "Cortocircuito",
     descripcion: "NC 801",
-    icono: <Gauge size={20} strokeWidth={1.5} />,
+    icono: <Radio size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "Icc",
     norma: "NC 801",
     categoria: "proteccion",
   },
@@ -151,7 +167,8 @@ const menuItems: OpcionMenu[] = [
     id: "demanda",
     titulo: "Demanda Máxima",
     descripcion: "NC 800",
-    icono: <Gauge size={20} strokeWidth={1.5} />,
+    icono: <ClipboardList size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "D",
     norma: "NC 800",
     categoria: "distribucion",
   },
@@ -159,7 +176,8 @@ const menuItems: OpcionMenu[] = [
     id: "canalizacion",
     titulo: "Canalización",
     descripcion: "NC 800",
-    icono: <Cable size={20} strokeWidth={1.5} />,
+    icono: <Box size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "%",
     norma: "NC 800",
     categoria: "distribucion",
   },
@@ -307,20 +325,28 @@ export default function Calculator() {
                             setSidebarOpen(false);
                           }
                         }}
-                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-md transition-all ${
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-md transition-all relative ${
                           calculoActivo === item.id
                             ? "bg-[var(--electric-cyan-subtle)] text-[var(--electric-cyan)]"
                             : "text-[var(--text-secondary)] hover:bg-[var(--surface-base)] hover:text-[var(--text-primary)]"
                         }`}
                       >
+                        {/* Indicador activo cuando está colapsado */}
+                        {!sidebarOpen && calculoActivo === item.id && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[var(--electric-cyan)] rounded-r-full" />
+                        )}
                         <span
-                          className={`${
+                          className={`flex-shrink-0 w-5 h-5 flex items-center justify-center text-xs font-bold ${
                             calculoActivo === item.id
                               ? "text-[var(--electric-cyan)]"
                               : "text-[var(--text-tertiary)]"
                           }`}
                         >
-                          {item.icono}
+                          {sidebarOpen ? item.icono : (
+                            <span className={calculoActivo === item.id ? "text-[var(--electric-cyan)]" : "text-[var(--text-tertiary)]"}>
+                              {item.iconoCollapsed}
+                            </span>
+                          )}
                         </span>
                         {sidebarOpen && (
                           <div className="flex-1 text-left">
@@ -416,19 +442,25 @@ export default function Calculator() {
               {/* Quick Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
                 {[
-                  { label: "Cálculos", value: "14", color: "var(--electric-cyan)" },
-                  { label: "Normas", value: "5", color: "var(--ground-green)" },
-                  { label: "Categorías", value: "3", color: "var(--warning-amber)" },
-                  { label: "Validaciones", value: "✓", color: "var(--electric-cyan)" },
+                  { label: "Cálculos", value: "14", color: "var(--electric-cyan)", icono: <Zap size={24} /> },
+                  { label: "Normas", value: "5", color: "var(--ground-green)", icono: <BookOpen size={24} /> },
+                  { label: "Categorías", value: "3", color: "var(--warning-amber)", icono: <Layers size={24} /> },
+                  { label: "Validaciones", value: "✓", color: "var(--electric-cyan)", icono: <Shield size={24} /> },
                 ].map((stat) => (
                   <div
                     key={stat.label}
-                    className="bg-[var(--surface-raised)] border border-[var(--border-default)] rounded-lg p-4 text-center"
+                    className="group bg-[var(--surface-raised)] border border-[var(--border-default)] rounded-xl p-4 text-center hover:border-[var(--electric-cyan)] hover:shadow-md transition-all duration-200 cursor-default"
                   >
-                    <div className="text-2xl font-bold" style={{ color: stat.color }}>
+                    <div 
+                      className="w-12 h-12 rounded-lg mx-auto mb-3 flex items-center justify-center transition-transform group-hover:scale-110"
+                      style={{ backgroundColor: `${stat.color}15` }}
+                    >
+                      <span style={{ color: stat.color }}>{stat.icono}</span>
+                    </div>
+                    <div className="text-3xl font-bold" style={{ color: stat.color }}>
                       {stat.value}
                     </div>
-                    <div className="text-xs text-[var(--text-tertiary)] mt-1">{stat.label}</div>
+                    <div className="text-xs font-medium text-[var(--text-tertiary)] mt-1 uppercase tracking-wide">{stat.label}</div>
                   </div>
                 ))}
               </div>

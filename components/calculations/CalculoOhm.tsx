@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Calculator as CalcIcon, Save } from "lucide-react";
+import { Calculator as CalcIcon } from "lucide-react";
 import { calcularOhm, type ResultadoCalculo } from "@/lib/formulas";
 import { useToast } from "@/components/ToastProvider";
-import { useHistory } from "@/components/HistoryProvider";
+import { ResultCard } from "@/components/ResultCard";
+import { Input } from "@/components/Input";
 
 type CampoACalcular = "v" | "i" | "r";
 
@@ -22,22 +23,6 @@ export function CalculoOhm() {
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
   const { showToast } = useToast();
-  const { addToHistory } = useHistory();
-
-  const guardarEnHistorial = () => {
-    if (!resultado) return;
-    addToHistory({
-      nombre: "Ley de Ohm",
-      tipo: "ohm",
-      inputs: { v: v || '0', i: i || '0', r: r || '0' },
-      resultado: {
-        valor: resultado.valor,
-        unidad: resultado.unidad,
-        formula: resultado.formula,
-      },
-    });
-    showToast("Cálculo guardado en historial", "success");
-  };
 
   const validarCampos = (): boolean => {
     const nuevosErrores: Errores = {};
@@ -156,28 +141,42 @@ export function CalculoOhm() {
 
       {/* Campos de entrada */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {(["v", "i", "r"] as const).map((campo) => (
-          <div key={campo}>
-            <label className="label">{labels[campo]}</label>
-            <input
-              type="number"
-              step="any"
-              value={campo === "v" ? v : campo === "i" ? i : r}
-              onChange={(e) => {
-                if (campo === "v") setV(e.target.value);
-                else if (campo === "i") setI(e.target.value);
-                else setR(e.target.value);
-                if (errores[campo]) setErrores((prev) => ({ ...prev, [campo]: undefined }));
-              }}
-              disabled={campoCalcular === campo}
-              placeholder={campoCalcular === campo ? "Resultado" : "0.00"}
-              className={`w-full ${
-                errores[campo] ? "border-[var(--alert-red)]" : ""
-              }`}
-            />
-            {errores[campo] && <p className="error-text">{errores[campo]}</p>}
-          </div>
-        ))}
+        <Input
+          label="Voltaje (V)"
+          type="number"
+          step="any"
+          value={v}
+          onChange={(e) => {
+            setV(e.target.value);
+            if (errores.v) setErrores((prev) => ({ ...prev, v: undefined }));
+          }}
+          disabled={campoCalcular === "v"}
+          error={errores.v}
+        />
+        <Input
+          label="Corriente (A)"
+          type="number"
+          step="any"
+          value={i}
+          onChange={(e) => {
+            setI(e.target.value);
+            if (errores.i) setErrores((prev) => ({ ...prev, i: undefined }));
+          }}
+          disabled={campoCalcular === "i"}
+          error={errores.i}
+        />
+        <Input
+          label="Resistencia (Ω)"
+          type="number"
+          step="any"
+          value={r}
+          onChange={(e) => {
+            setR(e.target.value);
+            if (errores.r) setErrores((prev) => ({ ...prev, r: undefined }));
+          }}
+          disabled={campoCalcular === "r"}
+          error={errores.r}
+        />
       </div>
 
       {/* Botón de cálculo */}
@@ -188,30 +187,12 @@ export function CalculoOhm() {
 
       {/* Resultado */}
       {resultado && (
-        <div className="result-success">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-sm text-[var(--ground-green)] font-medium">
-                {labels[campoCalcular]}
-              </p>
-              <p className="text-3xl font-bold text-[var(--ground-green)] mt-1">
-                {resultado.valor.toFixed(4)}
-                <span className="text-lg ml-1">{resultado.unidad}</span>
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-[var(--text-tertiary)]">Fórmula</p>
-              <p className="text-sm font-mono text-[var(--ground-green)]">{resultado.formula}</p>
-            </div>
-          </div>
-          <button
-            onClick={guardarEnHistorial}
-            className="w-full py-2 px-4 rounded-md bg-[var(--ground-green)] text-white hover:bg-[#047857] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
-          >
-            <Save size={16} />
-            Guardar en Historial
-          </button>
-        </div>
+        <ResultCard
+          resultado={resultado}
+          titulo="Ley de Ohm"
+          tipo="ohm"
+          inputs={{ [campoCalcular]: resultado.valor.toString() }}
+        />
       )}
     </div>
   );

@@ -21,7 +21,7 @@ A professional electrical calculator web application for Cuban Electrical Engine
 # Install dependencies
 npm install
 
-# Development server (http://localhost:3000)
+# Development server (http://localhost:3000) - uses webpack on Windows
 npm run dev
 
 # Production build

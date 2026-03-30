@@ -5,6 +5,7 @@ import { Gauge, Save } from "lucide-react";
 import { calcularPotenciaMonofasica, type ResultadoCalculo } from "@/lib/formulas";
 import { useToast } from "@/components/ToastProvider";
 import { useHistory } from "@/components/HistoryProvider";
+import { Input } from "@/components/Input";
 
 type CampoACalcular = "voltaje" | "corriente" | "potencia";
 
@@ -158,70 +159,55 @@ export function CalculoPotenciaMonofasica() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="label">Voltaje (V)</label>
-          <input
-            type="number"
-            step="any"
-            value={voltaje}
-            onChange={(e) => {
-              setVoltaje(e.target.value);
-              if (errores.voltaje) setErrores((prev) => ({ ...prev, voltaje: undefined }));
-            }}
-            disabled={campoCalcular === "voltaje"}
-            placeholder={campoCalcular === "voltaje" ? "Resultado" : "220"}
-            className={errores.voltaje ? "border-[var(--alert-red)]" : ""}
-          />
-          {errores.voltaje && <p className="error-text">{errores.voltaje}</p>}
-        </div>
-        <div>
-          <label className="label">Corriente (A)</label>
-          <input
-            type="number"
-            step="any"
-            value={corriente}
-            onChange={(e) => {
-              setCorriente(e.target.value);
-              if (errores.corriente) setErrores((prev) => ({ ...prev, corriente: undefined }));
-            }}
-            disabled={campoCalcular === "corriente"}
-            placeholder={campoCalcular === "corriente" ? "Resultado" : "0.00"}
-            className={errores.corriente ? "border-[var(--alert-red)]" : ""}
-          />
-          {errores.corriente && <p className="error-text">{errores.corriente}</p>}
-        </div>
-        <div>
-          <label className="label">Potencia (W)</label>
-          <input
-            type="number"
-            step="any"
-            value={potencia}
-            onChange={(e) => {
-              setPotencia(e.target.value);
-              if (errores.potencia) setErrores((prev) => ({ ...prev, potencia: undefined }));
-            }}
-            disabled={campoCalcular === "potencia"}
-            placeholder={campoCalcular === "potencia" ? "Resultado" : "0.00"}
-            className={errores.potencia ? "border-[var(--alert-red)]" : ""}
-          />
-          {errores.potencia && <p className="error-text">{errores.potencia}</p>}
-        </div>
-        <div>
-          <label className="label">Factor de Potencia (cos φ)</label>
-          <input
-            type="number"
-            step="0.01"
-            min="0"
-            max="1"
-            value={fp}
-            onChange={(e) => {
-              setFp(e.target.value);
-              if (errores.fp) setErrores((prev) => ({ ...prev, fp: undefined }));
-            }}
-            className={errores.fp ? "border-[var(--alert-red)]" : ""}
-          />
-          {errores.fp && <p className="error-text">{errores.fp}</p>}
-        </div>
+        <Input
+          label="Voltaje (V)"
+          type="number"
+          step="any"
+          value={voltaje}
+          onChange={(e) => {
+            setVoltaje(e.target.value);
+            if (errores.voltaje) setErrores((prev) => ({ ...prev, voltaje: undefined }));
+          }}
+          disabled={campoCalcular === "voltaje"}
+          error={errores.voltaje}
+        />
+        <Input
+          label="Corriente (A)"
+          type="number"
+          step="any"
+          value={corriente}
+          onChange={(e) => {
+            setCorriente(e.target.value);
+            if (errores.corriente) setErrores((prev) => ({ ...prev, corriente: undefined }));
+          }}
+          disabled={campoCalcular === "corriente"}
+          error={errores.corriente}
+        />
+        <Input
+          label="Potencia (W)"
+          type="number"
+          step="any"
+          value={potencia}
+          onChange={(e) => {
+            setPotencia(e.target.value);
+            if (errores.potencia) setErrores((prev) => ({ ...prev, potencia: undefined }));
+          }}
+          disabled={campoCalcular === "potencia"}
+          error={errores.potencia}
+        />
+        <Input
+          label="Factor de Potencia (cos φ)"
+          type="number"
+          step="0.01"
+          min="0"
+          max="1"
+          value={fp}
+          onChange={(e) => {
+            setFp(e.target.value);
+            if (errores.fp) setErrores((prev) => ({ ...prev, fp: undefined }));
+          }}
+          error={errores.fp}
+        />
       </div>
 
       <button onClick={calcular} className="btn btn-primary w-full py-3">
@@ -230,35 +216,37 @@ export function CalculoPotenciaMonofasica() {
       </button>
 
       {resultado && (
-        <div className="result-success">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <p className="text-sm text-[var(--ground-green)] font-medium">{labels[campoCalcular]}</p>
-              <p className="text-3xl font-bold text-[var(--ground-green)] mt-1">
-                {resultado.valor.toFixed(2)}
-                <span className="text-lg ml-1">{resultado.unidad}</span>
+        <div className="space-y-4">
+          <div className="result-success">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <p className="text-sm text-[var(--ground-green)] font-medium">{labels[campoCalcular]}</p>
+                <p className="text-3xl font-bold text-[var(--ground-green)] mt-1">
+                  {resultado.valor.toFixed(2)}
+                  <span className="text-lg ml-1">{resultado.unidad}</span>
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-[var(--text-tertiary)]">Fórmula</p>
+                <p className="text-sm font-mono text-[var(--ground-green)]">{resultado.formula}</p>
+              </div>
+            </div>
+            {resultado.nota && (
+              <p className="text-sm text-[var(--ground-green)] mt-3 pt-3 border-t border-[var(--ground-green)]/20">
+                {resultado.nota}
               </p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-[var(--text-tertiary)]">Fórmula</p>
-              <p className="text-sm font-mono text-[var(--ground-green)]">{resultado.formula}</p>
-            </div>
+            )}
           </div>
-          {resultado.nota && (
-            <p className="text-sm text-[var(--ground-green)] mt-3 pt-3 border-t border-[var(--ground-green)]/20">
-              {resultado.nota}
-            </p>
-          )}
+
+          <button
+            onClick={guardarEnHistorial}
+            className="w-full py-2 px-4 rounded-md bg-[var(--ground-green)] text-white hover:bg-[#047857] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+          >
+            <Save size={16} />
+            Guardar en Historial
+          </button>
         </div>
       )}
-
-      <button
-        onClick={guardarEnHistorial}
-        className="w-full py-2 px-4 rounded-md bg-[var(--ground-green)] text-white hover:bg-[#047857] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
-      >
-        <Save size={16} />
-        Guardar en Historial
-      </button>
     </div>
   );
 }
