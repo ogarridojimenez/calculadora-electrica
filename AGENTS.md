@@ -352,3 +352,92 @@ calculadora-electrica/
 2. Explain the plan briefly before writing code
 3. Run `npm run build` to verify no errors before committing
 4. Run `npm run test` to ensure tests pass
+
+---
+
+# Mejoras Pendientes del Proyecto
+
+## Phase 1 ✅ (Completada)
+- Dashboard stats con personalidad
+- ResultCard component
+- Iconos únicos por cálculo
+- Indicador activo en sidebar colapsado
+
+## Phase 2 ⚠️ (Parcialmente completada)
+| Tarea | Estado |
+|-------|--------|
+| Tipografía (Inter + JetBrains Mono) | ✅ Completado |
+| Sistema de elevación (backdrop blur, sombras) | ✅ Completado |
+| Micro-interacciones | ✅ Completado |
+| Skeleton loading | ✅ Completado |
+| Input con labels flotantes | ❌ Problemas - revertido a inputs simples |
+
+## Phase 3 - Pendiente
+
+### 3.1 Estados de Controles
+- [ ] Estados hover para todos los botones e inputs
+- [ ] Estados focus visibles y accesibles
+- [ ] Estados disabled para elementos no interactivos
+- [ ] Estados loading para datos que se cargan
+- [ ] Estados error para validaciones fallidas
+
+### 3.2 Consistency Checks
+- [ ] Verificar spacing en el grid definido
+- [ ] Verificar depth usando la estrategia declarada
+- [ ] Verificar colores de la paleta definida
+- [ ] Verificar patrones documentados reutilizados
+
+### 3.3 Animaciones y Micro-interacciones
+- [ ] Transiciones suaves en hover/focus
+- [ ] Easing deceleration para animaciones
+- [ ] Feedback visual al hacer click
+- [ ] Animaciones de entrada/salida para modals
+
+## Phase 4 - Pendiente
+
+### 4.1 Revisión de Jerarquía Visual
+- [ ] Squint test - verificar que jerarquía se percibe sin detalles
+- [ ] Verificar que nada "salta" agresivamente
+- [ ] borders/separadores suaves
+
+### 4.2 Sistema de Diseño
+- [ ] Documentar tokens de colores
+- [ ] Documentar escala de spacing
+- [ ] Documentar escala de border-radius
+- [ ] Documentar profundidades (shadows/borders)
+
+### 4.3 Componentes Avanzados
+- [ ] Dropdowns personalizados (no native select)
+- [ ] Date pickers personalizados
+- [ ] Modal/Dialog component
+- [ ] Tooltips
+
+## Phase 5 - Pendiente
+
+### 5.1 Accesibilidad
+- [ ] Verificar contraste de colores
+- [ ] Navegación por teclado
+- [ ] ARIA labels donde sea necesario
+- [ ] Focus indicators visibles
+
+### 5.2 Performance
+- [ ] Optimizar carga de fonts
+- [ ] Code splitting donde sea necesario
+- [ ] Lazy loading para componentes pesados
+
+### 5.3 Testing Visual
+- [ ] Snapshot tests para componentes
+- [ ] Tests de regresión visual
+
+## Notas Técnicas
+
+### Input Component
+El componente Input.tsx fue revertido a versión simple debido a problemas con labels flotantes. La versión actual usa labels tradicionales encima del campo.
+
+### Build
+El build está configurado para usar webpack (`next build` sin Turbopack) para evitar errores en Windows.
+
+### To-do futuro
+- Implementar labels flotantes correctamente cuando se tenga tiempo
+- Crear archivo `.interface-design/system.md` para documentar decisiones de diseño
+- Realizar audit completo con `/interface-design:audit`
