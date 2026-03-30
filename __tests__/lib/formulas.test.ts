@@ -7,6 +7,28 @@ import {
   calcularProteccionMagnetotermica,
   calcularCorreccionFactorPotencia,
   calcularResistividadSuelo,
+  calcularFlujoLuminoso,
+  calcularNumeroLuminarias,
+  calcularIndiceLocal,
+  getNivelesIluminancia,
+  calcularPotenciaInstalada,
+  calcularCorrienteNominalMotor,
+  calcularCorrienteArranque,
+  calcularProteccionMotor,
+  calcularConductorMotor,
+  calcularContactor,
+  calcularCortocircuitoTrifasico,
+  verificarPoderCorte,
+  calcularCortocircuitoMonofasico,
+  calcularConductorTierra,
+  calcularResistenciaElectrodo,
+  calcularElectrodosParalelo,
+  calcularDemandaMaxima,
+  calcularCorrienteAcometida,
+  calcularDemandaResidencial,
+  calcularOcupacionTubo,
+  aplicarFactoresCorreccion,
+  verificarSelectividad,
 } from "@/lib/formulas";
 
 describe("Ley de Ohm", () => {
@@ -235,5 +257,298 @@ describe("calcularResistividadSuelo", () => {
 
   test("retorna valor por defecto para tipo desconocido", () => {
     expect(calcularResistividadSuelo("desconocido")).toBe(1000);
+  });
+});
+
+describe("Iluminación (NC 803)", () => {
+  test("calcula flujo luminoso: Φ = (E × A) / (η × fm)", () => {
+    const result = calcularFlujoLuminoso({
+      iluminancia: 300,
+      area: 20,
+      factorUtilizacion: 0.6,
+      factorMantenimiento: 0.8,
+    });
+    expect(result.valor).toBeGreaterThan(0);
+    expect(result.unidad).toBe("lm");
+  });
+
+  test("lanza error si iluminancia es 0", () => {
+    expect(() => calcularFlujoLuminoso({
+      iluminancia: 0,
+      area: 20,
+      factorUtilizacion: 0.6,
+      factorMantenimiento: 0.8,
+    })).toThrow("La iluminancia debe ser mayor que 0");
+  });
+
+  test("calcula número de luminarias", () => {
+    const result = calcularNumeroLuminarias(10000, 1200);
+    expect(result.valor).toBe(9);
+    expect(result.unidad).toBe("und");
+  });
+
+  test("calcula índice del local", () => {
+    const result = calcularIndiceLocal(6, 4, 2.5);
+    expect(result.valor).toBeGreaterThan(0);
+    expect(result.unidad).toBe("");
+  });
+
+  test("getNivelesIluminancia retorna array con locales", () => {
+    const niveles = getNivelesIluminancia();
+    expect(niveles.length).toBeGreaterThan(0);
+    expect(niveles[0]).toHaveProperty("nombre");
+    expect(niveles[0]).toHaveProperty("iluminanciaMinima");
+  });
+
+  test("calcula potencia instalada", () => {
+    const result = calcularPotenciaInstalada(10, 36);
+    expect(result.valor).toBe(360);
+    expect(result.unidad).toBe("W");
+  });
+});
+
+describe("Motor (NC 804)", () => {
+  test("calcula corriente nominal: I_n = P / (√3 × V_L × η × cos(φ))", () => {
+    const result = calcularCorrienteNominalMotor({
+      potencia: 5,
+      tension: 380,
+      rendimiento: 0.9,
+      factorPotencia: 0.85,
+      tipoArranque: "directo",
+    });
+    expect(result.valor).toBeGreaterThan(0);
+    expect(result.unidad).toBe("A");
+  });
+
+  test("lanza error si potencia es 0", () => {
+    expect(() => calcularCorrienteNominalMotor({
+      potencia: 0,
+      tension: 380,
+      rendimiento: 0.9,
+      factorPotencia: 0.85,
+      tipoArranque: "directo",
+    })).toThrow("La potencia debe ser mayor que 0");
+  });
+
+  test("calcula corriente de arranque directo (K=6)", () => {
+    const nominal = calcularCorrienteNominalMotor({
+      potencia: 5,
+      tension: 380,
+      rendimiento: 0.9,
+      factorPotencia: 0.85,
+      tipoArranque: "directo",
+    });
+    const arranque = calcularCorrienteArranque(nominal.valor, "directo");
+    expect(arranque.valor).toBeCloseTo(nominal.valor * 6);
+  });
+
+  test("calcula corriente de arranque estrella-triángulo (K=2.15)", () => {
+    const nominal = calcularCorrienteNominalMotor({
+      potencia: 5,
+      tension: 380,
+      rendimiento: 0.9,
+      factorPotencia: 0.85,
+      tipoArranque: "directo",
+    });
+    const arranque = calcularCorrienteArranque(nominal.valor, "estrella-triangulo");
+    expect(arranque.valor).toBeCloseTo(nominal.valor * 2.15);
+  });
+
+  test("calcula protección para motor", () => {
+    const result = calcularProteccionMotor(20);
+    expect(result.valor).toBeGreaterThan(20);
+    expect(result.unidad).toBe("A");
+  });
+
+  test("selecciona protección comercial para motor", () => {
+    const proteccionesComerciales = [6, 10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160];
+    const result = calcularProteccionMotor(20);
+    expect(proteccionesComerciales).toContain(result.valor);
+  });
+
+  test("calcula conductor para motor", () => {
+    const result = calcularConductorMotor(20);
+    expect(result.valor).toBeGreaterThan(0);
+    expect(result.unidad).toBe("mm²");
+  });
+
+  test("calcula contactor", () => {
+    const result = calcularContactor(20, 100);
+    expect(result.valor).toBeGreaterThan(20);
+    expect(result.unidad).toBe("A");
+  });
+});
+
+describe("Cortocircuito (NC 801)", () => {
+  test("calcula cortocircuito trifásico", () => {
+    const result = calcularCortocircuitoTrifasico({
+      tensionLinea: 380,
+      longitud: 50,
+      seccion: 10,
+      material: "cobre",
+    });
+    expect(result.valor).toBeGreaterThan(0);
+    expect(result.unidad).toBe("kA");
+  });
+
+  test("calcula cortocircuito monofásico", () => {
+    const result = calcularCortocircuitoMonofasico({
+      tensionLinea: 380,
+      longitud: 50,
+      seccion: 10,
+      material: "cobre",
+    });
+    expect(result.valor).toBeGreaterThan(0);
+    expect(result.unidad).toBe("A");
+  });
+
+  test("verifica poder de corte - APTO", () => {
+    const result = verificarPoderCorte(10, 15);
+    expect(result.unidad).toBe("APTO");
+  });
+
+  test("verifica poder de corte - NO APTO", () => {
+    const result = verificarPoderCorte(20, 15);
+    expect(result.unidad).toBe("NO APTO");
+  });
+
+  test("calcula conductor de tierra", () => {
+    const result = calcularConductorTierra(10);
+    expect(result.valor).toBe(10);
+    expect(result.unidad).toBe("mm²");
+  });
+
+  test("conductor tierra para sección mayor a 35mm²", () => {
+    const result = calcularConductorTierra(120);
+    expect(result.valor).toBe(70);
+  });
+});
+
+describe("Puesta a Tierra (NC 802)", () => {
+  test("calcula resistencia de electrodo - CUMPLE", () => {
+    const result = calcularResistenciaElectrodo({
+      resistividad: 50,
+      longitudElectrodo: 2.4,
+      diametroElectrodo: 0.016,
+    });
+    expect(result.valor).toBeLessThanOrEqual(25);
+  });
+
+  test("calcula resistencia de electrodo - NO CUMPLE", () => {
+    const result = calcularResistenciaElectrodo({
+      resistividad: 5000,
+      longitudElectrodo: 1.5,
+      diametroElectrodo: 0.016,
+    });
+    expect(result.valor).toBeGreaterThan(25);
+  });
+
+  test("calcula electrodos en paralelo", () => {
+    const result = calcularElectrodosParalelo(50, 3, "L");
+    expect(result.valor).toBeLessThan(50);
+  });
+
+  test("electrodos con separación menor tiene menor eficiencia", () => {
+    const mayorSep = calcularElectrodosParalelo(50, 3, "L");
+    const menorSep = calcularElectrodosParalelo(50, 3, "menor");
+    expect(mayorSep.valor).toBeLessThan(menorSep.valor);
+  });
+});
+
+describe("Demanda (NC 800)", () => {
+  test("calcula demanda máxima", () => {
+    const result = calcularDemandaMaxima({
+      cargas: [
+        { potencia: 2000, tipo: "Iluminación" },
+        { potencia: 3000, tipo: "Tomas generales" },
+      ],
+      factorPotencia: 0.9,
+      sistema: "monofasico",
+      tension: 220,
+    });
+    expect(result.valor).toBeGreaterThan(0);
+    expect(result.unidad).toBe("kW");
+  });
+
+  test("lanza error si no hay cargas", () => {
+    expect(() => calcularDemandaMaxima({
+      cargas: [],
+      factorPotencia: 0.9,
+      sistema: "monofasico",
+      tension: 220,
+    })).toThrow("Debe proporcionar al menos una carga");
+  });
+
+  test("calcula corriente de acometida trifásica", () => {
+    const result = calcularCorrienteAcometida(50, 380, 0.9, "trifasico");
+    expect(result.valor).toBeGreaterThan(0);
+    expect(result.unidad).toBe("A");
+  });
+
+  test("calcula corriente de acometida monofásica", () => {
+    const result = calcularCorrienteAcometida(10, 220, 0.9, "monofasico");
+    expect(result.valor).toBeGreaterThan(0);
+    expect(result.unidad).toBe("A");
+  });
+
+  test("calcula demanda residencial simplificada - caso básico", () => {
+    const result = calcularDemandaResidencial(1000);
+    expect(result.valor).toBe(1000);
+    expect(result.unidad).toBe("W");
+  });
+
+  test("calcula demanda residencial simplificada - caso adicional", () => {
+    const result = calcularDemandaResidencial(3000);
+    expect(result.valor).toBe(2100);
+  });
+});
+
+describe("Canalización (NC 800)", () => {
+  test("calcula ocupación de tubo - CUMPLE", () => {
+    const result = calcularOcupacionTubo({
+      conductores: [
+        { seccion: 2.5, cantidad: 3 },
+        { seccion: 1.5, cantidad: 2 },
+      ],
+      diametroTubo: 25,
+    });
+    expect(result.valor).toBeLessThanOrEqual(53);
+    expect(result.unidad).toBe("%");
+  });
+
+  test("lanza error si no hay conductores", () => {
+    expect(() => calcularOcupacionTubo({
+      conductores: [],
+      diametroTubo: 25,
+    })).toThrow("Debe proporcionar al menos un conductor");
+  });
+
+  test("calcula ocupación para muchos conductores", () => {
+    const result = calcularOcupacionTubo({
+      conductores: [
+        { seccion: 2.5, cantidad: 5 },
+        { seccion: 1.5, cantidad: 5 },
+      ],
+      diametroTubo: 32,
+    });
+    expect(result.valor).toBeGreaterThan(0);
+  });
+});
+
+describe("Factores de Corrección", () => {
+  test("aplica factores de corrección", () => {
+    const result = aplicarFactoresCorreccion(20, 30, 2);
+    expect(result.valor).toBeGreaterThan(20);
+    expect(result.unidad).toBe("A");
+  });
+
+  test("verifica selectividad - SELECTIVO", () => {
+    const result = verificarSelectividad(16, 40);
+    expect(result.unidad).toBe("SELECTIVO");
+  });
+
+  test("verifica selectividad - NO SELECTIVO", () => {
+    const result = verificarSelectividad(25, 32);
+    expect(result.unidad).toBe("NO SELECTIVO");
   });
 });
