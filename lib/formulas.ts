@@ -837,3 +837,428 @@ export function siguienteSeccion(seccionCalculada: number, material: 'Cu' | 'Al'
 
   return secciones.find(s => s >= seccionCalculada) || secciones[secciones.length - 1];
 }
+
+// ============================================================
+// TABLAS NORMATIVAS NC IEC 60364-5-52
+// ============================================================
+
+export const TABLA_B52_1 = {
+  metodo_A1: {
+    Cobre: {
+      Dos_PVC: [
+        {mm2:1.5,amp:14.5},{mm2:2.5,amp:19.5},{mm2:4,amp:26},{mm2:6,amp:34},
+        {mm2:10,amp:46},{mm2:16,amp:61},{mm2:25,amp:80},{mm2:35,amp:99},
+        {mm2:50,amp:119},{mm2:70,amp:151},{mm2:95,amp:182},{mm2:120,amp:210}
+      ],
+      Tres_PVC: [
+        {mm2:1.5,amp:13.5},{mm2:2.5,amp:18},{mm2:4,amp:24},{mm2:6,amp:31},
+        {mm2:10,amp:42},{mm2:16,amp:56},{mm2:25,amp:73},{mm2:35,amp:89},
+        {mm2:50,amp:108},{mm2:70,amp:136},{mm2:95,amp:164},{mm2:120,amp:188}
+      ],
+      Dos_XLPE: [
+        {mm2:1.5,amp:19},{mm2:2.5,amp:26},{mm2:4,amp:35},{mm2:6,amp:45},
+        {mm2:10,amp:61},{mm2:16,amp:81},{mm2:25,amp:106},{mm2:35,amp:131},
+        {mm2:50,amp:158},{mm2:70,amp:200},{mm2:95,amp:241},{mm2:120,amp:278}
+      ],
+      Tres_XLPE: [
+        {mm2:1.5,amp:17},{mm2:2.5,amp:23},{mm2:4,amp:31},{mm2:6,amp:40},
+        {mm2:10,amp:54},{mm2:16,amp:73},{mm2:25,amp:95},{mm2:35,amp:117},
+        {mm2:50,amp:141},{mm2:70,amp:179},{mm2:95,amp:216},{mm2:120,amp:249}
+      ]
+    },
+    Aluminio: {
+      Dos_PVC: [
+        {mm2:16,amp:47},{mm2:25,amp:61},{mm2:35,amp:75},{mm2:50,amp:90},
+        {mm2:70,amp:115},{mm2:95,amp:138},{mm2:120,amp:159}
+      ]
+    }
+  },
+  metodo_B1: {
+    Cobre: {
+      Dos_PVC: [
+        {mm2:1.5,amp:17.5},{mm2:2.5,amp:24},{mm2:4,amp:32},{mm2:6,amp:41},
+        {mm2:10,amp:57},{mm2:16,amp:76},{mm2:25,amp:101},{mm2:35,amp:125},
+        {mm2:50,amp:151},{mm2:70,amp:192},{mm2:95,amp:232},{mm2:120,amp:269}
+      ],
+      Tres_PVC: [
+        {mm2:1.5,amp:15.5},{mm2:2.5,amp:21},{mm2:4,amp:28},{mm2:6,amp:36},
+        {mm2:10,amp:50},{mm2:16,amp:68},{mm2:25,amp:89},{mm2:35,amp:110},
+        {mm2:50,amp:134},{mm2:70,amp:171},{mm2:95,amp:207},{mm2:120,amp:239}
+      ]
+    }
+  },
+  metodo_C: {
+    Cobre: {
+      Dos_PVC: [
+        {mm2:1.5,amp:22},{mm2:2.5,amp:30},{mm2:4,amp:40},{mm2:6,amp:51},
+        {mm2:10,amp:70},{mm2:16,amp:94},{mm2:25,amp:119},{mm2:35,amp:148},
+        {mm2:50,amp:180},{mm2:70,amp:232},{mm2:95,amp:282},{mm2:120,amp:328}
+      ],
+      Tres_PVC: [
+        {mm2:1.5,amp:20},{mm2:2.5,amp:27},{mm2:4,amp:36},{mm2:6,amp:46},
+        {mm2:10,amp:63},{mm2:16,amp:85},{mm2:25,amp:110},{mm2:35,amp:137},
+        {mm2:50,amp:167},{mm2:70,amp:214},{mm2:95,amp:261},{mm2:120,amp:300}
+      ]
+    }
+  }
+} as const;
+
+export const TABLA_B52_3 = [
+  {
+    disposicion: 'Empotrados o encerrados',
+    factores: {1:1.0, 2:0.80, 3:0.70, 4:0.70, 6:0.55, 9:0.50}
+  },
+  {
+    disposicion: 'Sobre bandeja no perforada',
+    factores: {1:1.0, 2:0.85, 3:0.80, 4:0.75, 6:0.70, 9:0.70}
+  },
+  {
+    disposicion: 'Sobre bandeja perforada',
+    factores: {1:1.0, 2:0.88, 3:0.82, 4:0.77, 6:0.73, 9:0.72}
+  },
+  {
+    disposicion: 'En tubería en superficie',
+    factores: {1:1.0, 2:0.85, 3:0.79, 4:0.75, 6:0.68, 9:0.65}
+  }
+] as const;
+
+export const TABLA_IMPEDANCIAS = [
+  {mm2:1.5, R_ohm_km:12.10, X_ohm_km:0.177},
+  {mm2:2.5, R_ohm_km:7.41,  X_ohm_km:0.166},
+  {mm2:4,   R_ohm_km:4.61,  X_ohm_km:0.157},
+  {mm2:6,   R_ohm_km:3.08,  X_ohm_km:0.149},
+  {mm2:10,  R_ohm_km:1.83,  X_ohm_km:0.143},
+  {mm2:16,  R_ohm_km:1.15,  X_ohm_km:0.138},
+  {mm2:25,  R_ohm_km:0.727, X_ohm_km:0.127},
+  {mm2:35,  R_ohm_km:0.524, X_ohm_km:0.119},
+  {mm2:50,  R_ohm_km:0.387, X_ohm_km:0.119},
+  {mm2:70,  R_ohm_km:0.268, X_ohm_km:0.114},
+  {mm2:95,  R_ohm_km:0.193, X_ohm_km:0.110},
+  {mm2:120, R_ohm_km:0.153, X_ohm_km:0.107},
+  {mm2:150, R_ohm_km:0.124, X_ohm_km:0.107},
+  {mm2:185, R_ohm_km:0.0991,X_ohm_km:0.106},
+  {mm2:240, R_ohm_km:0.0754,X_ohm_km:0.100}
+] as const;
+
+export const TABLA_MOTORES_FLA = [
+  {hp:0.5,  kw:0.37,  v220:2.2,  v380:1.3,  v440:1.1},
+  {hp:1.0,  kw:0.75,  v220:4.2,  v380:2.4,  v440:2.1},
+  {hp:1.5,  kw:1.1,   v220:6.0,  v380:3.5,  v440:3.0},
+  {hp:2.0,  kw:1.5,   v220:7.5,  v380:4.3,  v440:3.8},
+  {hp:3.0,  kw:2.2,   v220:10.6, v380:6.1,  v440:5.3},
+  {hp:5.0,  kw:3.7,   v220:15.2, v380:8.8,  v440:7.6},
+  {hp:7.5,  kw:5.5,   v220:22.0, v380:12.7, v440:11.0},
+  {hp:10.0, kw:7.5,   v220:28.0, v380:16.2, v440:14.0},
+  {hp:15.0, kw:11.0,  v220:42.0, v380:24.2, v440:21.0},
+  {hp:20.0, kw:15.0,  v220:54.0, v380:31.2, v440:27.0},
+  {hp:25.0, kw:18.5,  v220:68.0, v380:39.2, v440:34.0},
+  {hp:30.0, kw:22.0,  v220:80.0, v380:46.2, v440:40.0}
+] as const;
+
+export const TABLA_TUBERIAS = [
+  {nombre:'Conduit 1/2"', diametro_mm:16, area_total_mm2:196,  area_util_53:104, area_util_31:61,  area_util_40:78},
+  {nombre:'Conduit 3/4"', diametro_mm:21, area_total_mm2:342,  area_util_53:181, area_util_31:106, area_util_40:137},
+  {nombre:'Conduit 1"',   diametro_mm:27, area_total_mm2:547,  area_util_53:290, area_util_31:170, area_util_40:219},
+  {nombre:'Conduit 1¼"', diametro_mm:35, area_total_mm2:951,  area_util_53:504, area_util_31:295, area_util_40:380},
+  {nombre:'Conduit 1½"', diametro_mm:41, area_total_mm2:1314, area_util_53:696, area_util_31:407, area_util_40:526},
+  {nombre:'Conduit 2"',   diametro_mm:53, area_total_mm2:2165, area_util_53:1147,area_util_31:671, area_util_40:866}
+] as const;
+
+export const AREAS_CONDUCTORES_MM2: Record<number, number> = {
+  1.5:8.11, 2.5:13.48, 4:20.43, 6:28.89,
+  10:51.87, 16:81.07, 25:126.7, 35:166.3,
+  50:229.7, 70:352.0, 95:483.1, 120:616.8
+};
+
+const FACTORES_TEMP_PVC: Record<number, number> = {
+  10:1.22, 15:1.17, 20:1.12, 25:1.06,
+  30:1.00, 35:0.94, 40:0.87, 45:0.79,
+  50:0.71, 55:0.61, 60:0.50
+};
+
+const FACTORES_TEMP_XLPE: Record<number, number> = {
+  10:1.15, 15:1.12, 20:1.08, 25:1.04,
+  30:1.00, 35:0.96, 40:0.91, 45:0.87,
+  50:0.82, 55:0.76, 60:0.71
+};
+
+// ============================================================
+// INTERFACES PARA MÓDULOS AVANZADOS
+// ============================================================
+
+export interface CalculoAmpacidad {
+  seccion: number;
+  material: 'Cobre' | 'Aluminio';
+  metodo: 'metodo_A1' | 'metodo_B1' | 'metodo_C';
+  aislamiento: 'Dos_PVC' | 'Tres_PVC' | 'Dos_XLPE' | 'Tres_XLPE';
+  temperaturaAmbiente: number;
+  numCircuitos: number;
+  disposicion: string;
+}
+
+export interface CalculoCaidaTensionRX {
+  seccion: number;
+  longitud: number;
+  corriente: number;
+  voltaje: number;
+  cosPhi: number;
+  sistema: 'monofasico' | 'trifasico';
+}
+
+export interface CalculoMotorFLA {
+  hp: number;
+  tension: 220 | 380 | 440;
+  tipoArranque: 'directo' | 'estrella-triangulo' | 'variador' | 'ITM';
+  metodoInstalacion: 'metodo_A1' | 'metodo_B1' | 'metodo_C';
+  temperaturaAmbiente: number;
+  numCircuitos: number;
+}
+
+export interface ConductorInput {
+  seccion: number;
+  cantidad: number;
+}
+
+export interface CalculoConduitParams {
+  conductores: ConductorInput[];
+}
+
+// ============================================================
+// FUNCIONES DE CÁLCULO AVANZADO
+// ============================================================
+
+/**
+ * Interpola linealmente entre dos valores
+ */
+function interpolar(x: number, x1: number, y1: number, x2: number, y2: number): number {
+  return y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
+}
+
+/**
+ * Obtiene el factor de temperatura más cercano o interpolado
+ */
+function obtenerFactorTemperatura(temp: number, esPVC: boolean): number {
+  const factores = esPVC ? FACTORES_TEMP_PVC : FACTORES_TEMP_XLPE;
+  const temps = Object.keys(factores).map(Number).sort((a, b) => a - b);
+  
+  if (temp in factores) {
+    return factores[temp];
+  }
+  
+  const tempMenor = temps.find(t => t < temp);
+  const tempMayor = temps.find(t => t > temp);
+  
+  if (tempMenor === undefined) return factores[temps[0]];
+  if (tempMayor === undefined) return factores[temps[temps.length - 1]];
+  
+  return interpolar(temp, tempMenor, factores[tempMenor], tempMayor, factores[tempMayor]);
+}
+
+/**
+ * Obtiene el factor de agrupamiento más cercano
+ */
+function obtenerFactorAgrupamiento(numCircuitos: number, disposicion: string): number {
+  const fila = TABLA_B52_3.find(f => f.disposicion === disposicion);
+  if (!fila) throw new Error('Disposición no válida');
+  
+  const niveles = Object.keys(fila.factores).map(Number).sort((a, b) => a - b);
+  const nivel = niveles.find(n => n >= numCircuitos) || niveles[niveles.length - 1];
+  return fila.factores[nivel as keyof typeof fila.factores];
+}
+
+/**
+ * Calcula la ampacidad corregida Iz = Ia × Ft × Fg
+ * @param seccion Sección en mm²
+ * @param material Material del conductor
+ * @param metodo Método de instalación (A1, B1, C)
+ * @param aislamiento Tipo de aislamiento y conductores
+ * @param temperaturaAmbiente °C
+ * @param numCircuitos Número de circuitos agrupados
+ * @param disposicion Disposición física de los cables
+ * @returns Iz en Amperios
+ * @norma NC 800 / NC IEC 60364-5-52 Tabla B.52.1, B.52.3
+ */
+export function calcularAmpacidadCorregida(params: CalculoAmpacidad): ResultadoCalculo {
+  const { seccion, material, metodo, aislamiento, temperaturaAmbiente, numCircuitos, disposicion } = params;
+  
+  // Paso 1: Buscar Ia en tabla
+  const metodoData = TABLA_B52_1[metodo];
+  if (!metodoData) throw new Error('Método de instalación no válido');
+  
+  const materialData = metodoData[material as keyof typeof metodoData];
+  if (!materialData) throw new Error('Material no disponible para este método');
+  
+  const aislamientoData = materialData[aislamiento as keyof typeof materialData];
+  if (!aislamientoData) throw new Error('Combinación de aislamiento no disponible');
+  
+  const fila = aislamientoData.find((f: {mm2: number; amp: number}) => f.mm2 === seccion);
+  if (!fila) throw new Error(`Sección ${seccion}mm² no disponible para esta combinación`);
+  const Ia = fila.amp;
+  
+  // Paso 2: Factor de temperatura
+  const esPVC = aislamiento.includes('PVC');
+  const Ft = obtenerFactorTemperatura(temperaturaAmbiente, esPVC);
+  
+  // Paso 3: Factor de agrupamiento
+  const Fg = obtenerFactorAgrupamiento(numCircuitos, disposicion);
+  
+  // Paso 4: Ampacidad corregida
+  const Iz = Ia * Ft * Fg;
+  
+  return {
+    valor: Math.round(Iz * 10) / 10,
+    unidad: 'A',
+    formula: 'Iz = Ia × Ft × Fg',
+    nota: `Ia=${Ia}A (tabla) × Ft=${Ft.toFixed(2)} (${temperaturaAmbiente}°C) × Fg=${Fg.toFixed(2)} (${numCircuitos} circuitos)`
+  };
+}
+
+/**
+ * Calcula caída de tensión considerando resistencia R y reactancia X
+ * @param seccion Sección en mm²
+ * @param longitud Longitud en metros
+ * @param corriente Corriente en A
+ * @param voltaje Tensión nominal en V
+ * @param cosPhi Factor de potencia
+ * @param sistema Monofásico o trifásico
+ * @returns dV en porcentaje
+ * @norma NC 800
+ */
+export function calcularCaidaTensionRX(params: CalculoCaidaTensionRX): ResultadoCalculo {
+  const { seccion, longitud, corriente, voltaje, cosPhi, sistema } = params;
+  
+  // Paso 1: Buscar impedancia
+  const imp = TABLA_IMPEDANCIAS.find(f => f.mm2 === seccion);
+  if (!imp) throw new Error(`Sección ${seccion}mm² no disponible`);
+  
+  const R = imp.R_ohm_km;
+  const X = imp.X_ohm_km;
+  const senPhi = Math.sqrt(1 - cosPhi ** 2);
+  const L_km = longitud / 1000;
+  
+  // Paso 2 y 3: Calcular caída de tensión
+  let dV_V: number;
+  let formula: string;
+  
+  if (sistema === 'monofasico') {
+    dV_V = 2 * L_km * corriente * (R * cosPhi + X * senPhi);
+    formula = 'dV% = (2 × L × I × (R×cosφ + X×senφ)) / V × 100';
+  } else {
+    dV_V = Math.sqrt(3) * L_km * corriente * (R * cosPhi + X * senPhi);
+    formula = 'dV% = (√3 × L × I × (R×cosφ + X×senφ)) / V × 100';
+  }
+  
+  const dV_pct = (dV_V / voltaje) * 100;
+  
+  // Paso 4: Evaluar cumplimiento
+  let nota: string;
+  if (dV_pct <= 3) {
+    nota = '✓ Cumple iluminación y fuerza (≤3%)';
+  } else if (dV_pct <= 5) {
+    nota = '⚠️ Solo cumple fuerza motriz (≤5%). No apta para iluminación';
+  } else {
+    nota = '✗ No cumple ningún límite normativo NC 800';
+  }
+  
+  return {
+    valor: Math.round(dV_pct * 100) / 100,
+    unidad: '%',
+    formula,
+    nota: `R=${R.toFixed(3)}Ω/km, X=${X.toFixed(3)}Ω/km, ΔV=${dV_V.toFixed(2)}V. ${nota}`
+  };
+}
+
+/**
+ * Calcula alimentación completa de motor por lookup FLA real
+ * @param hp Potencia en caballos de fuerza
+ * @param tension Tensión de alimentación en V
+ * @param tipoArranque Tipo de arranque
+ * @param metodoInstalacion Método para selección de cable
+ * @returns Objeto con FLA, conductor, ITM y contactor
+ * @norma NC 804 / NC 800
+ */
+export function calcularMotorPorFLA(params: CalculoMotorFLA): ResultadoCalculo {
+  const { hp, tension, tipoArranque, metodoInstalacion, temperaturaAmbiente, numCircuitos } = params;
+  
+  // Paso 1: FLA
+  const fila = TABLA_MOTORES_FLA.find(f => f.hp === hp);
+  if (!fila) throw new Error(`HP ${hp} no disponible en tabla`);
+  
+  const FLA = tension === 220 ? fila.v220 : tension === 440 ? fila.v440 : fila.v380;
+  
+  // Paso 2: Conductor
+  const I_conductor = FLA * 1.25;
+  const aislamientoData = TABLA_B52_1[metodoInstalacion].Cobre.Tres_PVC;
+  let seccionCable = aislamientoData.find(f => f.amp >= I_conductor);
+  if (!seccionCable) {
+    seccionCable = aislamientoData[aislamientoData.length - 1];
+  }
+  
+  const Ft = obtenerFactorTemperatura(temperaturaAmbiente, true);
+  const Fg = obtenerFactorAgrupamiento(numCircuitos, 'Empotrados o encerrados');
+  const Iz = seccionCable.amp * Ft * Fg;
+  
+  // Paso 3: Protección ITM
+  const factoresITM: Record<string, number> = {
+    'directo': 2.5,
+    'ITM': 2.5,
+    'estrella-triangulo': 1.5,
+    'variador': 1.25
+  };
+  const I_proteccion = FLA * factoresITM[tipoArranque];
+  const ITM_comerciales = [6,10,16,20,25,32,40,50,63,80,100,125,160,200,250];
+  const ITM_elegido = ITM_comerciales.find(v => v >= I_proteccion) || 250;
+  
+  // Paso 4: Contactor
+  const corrienteArranque = FLA * 6;
+  const contactor = [9, 12, 18, 25, 32, 40, 50, 65, 85, 115, 150, 180, 210, 260, 320, 400];
+  const contactorElegido = contactor.find(v => v >= FLA) || 400;
+  
+  const nota = `FLA: ${FLA}A | Cable: ${seccionCable.mm2}mm² (Iz=${Iz.toFixed(1)}A) | ITM: ${ITM_elegido}A | Contactor: ${contactorElegido}A`;
+  
+  return {
+    valor: FLA,
+    unidad: 'A',
+    formula: 'FLA lookup tabla',
+    nota
+  };
+}
+
+/**
+ * Selecciona el conduit mínimo necesario
+ * @param conductores Array de {seccion, cantidad}
+ * @returns Conduit recomendado con % ocupación
+ * @norma NC 800 / NEC Art. 358
+ */
+export function seleccionarConduit(params: CalculoConduitParams): ResultadoCalculo {
+  const { conductores } = params;
+  
+  // Paso 1: Calcular área total
+  let areaTotal = 0;
+  for (const c of conductores) {
+    const area = AREAS_CONDUCTORES_MM2[c.seccion];
+    if (!area) throw new Error(`Sección ${c.seccion}mm² no disponible`);
+    areaTotal += area * c.cantidad;
+  }
+  
+  // Paso 2: Factor de llenado
+  const numTotal = conductores.reduce((sum, c) => sum + c.cantidad, 0);
+  let factorLlenado: number;
+  if (numTotal === 1) factorLlenado = 0.53;
+  else if (numTotal === 2) factorLlenado = 0.31;
+  else factorLlenado = 0.40;
+  
+  // Paso 3: Buscar conduit
+  const conduit = TABLA_TUBERIAS.find(t => t.area_total_mm2 * factorLlenado >= areaTotal);
+  if (!conduit) throw new Error('Conductores exceden conduit 2". Dividir en varios tubos.');
+  
+  // Paso 4: % ocupación real
+  const ocupacionReal = (areaTotal / conduit.area_total_mm2) * 100;
+  
+  return {
+    valor: Math.round(ocupacionReal * 10) / 10,
+    unidad: '%',
+    formula: 'Ocupación = (Área conductores / Área conduit) × 100',
+    nota: `Área total: ${areaTotal.toFixed(1)}mm² | Factor: ${(factorLlenado*100).toFixed(0)}% | Conduit: ${conduit.nombre} (${conduit.area_total_mm2}mm²)`
+  };
+}

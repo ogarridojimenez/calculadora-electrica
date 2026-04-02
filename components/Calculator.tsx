@@ -21,6 +21,8 @@ import {
   Radio,
   ClipboardList,
   Box,
+  Activity,
+  Hash,
 } from "lucide-react";
 import { CalculoOhm } from "./calculations/CalculoOhm";
 import { CalculoPotenciaMonofasica } from "./calculations/CalculoPotenciaMonofasica";
@@ -35,6 +37,10 @@ import { CalculoMotor } from "./calculations/CalculoMotor";
 import { CalculoCortocircuito } from "./calculations/CalculoCortocircuito";
 import { CalculoDemanda } from "./calculations/CalculoDemanda";
 import { CalculoCanalizacion } from "./calculations/CalculoCanalizacion";
+import { CalculoAmpacidad } from "./calculations/CalculoAmpacidad";
+import { CalculoCaidaTensionAvanzada } from "./calculations/CalculoCaidaTensionAvanzada";
+import { CalculoMotorFLA } from "./calculations/CalculoMotorFLA";
+import { CalculoConduit } from "./calculations/CalculoConduit";
 import { useTheme } from "./ThemeProvider";
 import { useHistory } from "./HistoryProvider";
 
@@ -51,7 +57,11 @@ type TipoCalculo =
   | "motor"
   | "cortocircuito"
   | "demanda"
-  | "canalizacion";
+  | "canalizacion"
+  | "ampacidad"
+  | "caida-tension-avanzada"
+  | "motor-fla"
+  | "conduit";
 
 interface OpcionMenu {
   id: TipoCalculo;
@@ -181,6 +191,42 @@ const menuItems: OpcionMenu[] = [
     norma: "NC 800",
     categoria: "distribucion",
   },
+  {
+    id: "ampacidad",
+    titulo: "Ampacidad Corregida",
+    descripcion: "NC IEC 60364-5-52",
+    icono: <Zap size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "Iz",
+    norma: "NC 800",
+    categoria: "distribucion",
+  },
+  {
+    id: "caida-tension-avanzada",
+    titulo: "Caída Tensión RX",
+    descripcion: "Con R y X",
+    icono: <Activity size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "ΔV",
+    norma: "NC 800",
+    categoria: "distribucion",
+  },
+  {
+    id: "motor-fla",
+    titulo: "Motor por FLA",
+    descripcion: "Lookup tabla",
+    icono: <Cpu size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "FLA",
+    norma: "NC 804",
+    categoria: "basico",
+  },
+  {
+    id: "conduit",
+    titulo: "Selección Conduit",
+    descripcion: "NEC Art. 358",
+    icono: <Hash size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "Ø",
+    norma: "NC 800",
+    categoria: "distribucion",
+  },
 ];
 
 const categorias = [
@@ -225,6 +271,14 @@ export default function Calculator() {
         return <CalculoDemanda />;
       case "canalizacion":
         return <CalculoCanalizacion />;
+      case "ampacidad":
+        return <CalculoAmpacidad />;
+      case "caida-tension-avanzada":
+        return <CalculoCaidaTensionAvanzada />;
+      case "motor-fla":
+        return <CalculoMotorFLA />;
+      case "conduit":
+        return <CalculoConduit />;
       default:
         return null;
     }
@@ -442,7 +496,7 @@ export default function Calculator() {
               {/* Quick Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
                 {[
-                  { label: "Cálculos", value: "14", color: "var(--electric-cyan)", icono: <Zap size={24} /> },
+                  { label: "Cálculos", value: "18", color: "var(--electric-cyan)", icono: <Zap size={24} /> },
                   { label: "Normas", value: "5", color: "var(--ground-green)", icono: <BookOpen size={24} /> },
                   { label: "Categorías", value: "3", color: "var(--warning-amber)", icono: <Layers size={24} /> },
                   { label: "Validaciones", value: "✓", color: "var(--electric-cyan)", icono: <Shield size={24} /> },
