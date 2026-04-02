@@ -29,6 +29,10 @@ import {
   calcularOcupacionTubo,
   aplicarFactoresCorreccion,
   verificarSelectividad,
+  calcularAmpacidadCorregida,
+  calcularCaidaTensionRX,
+  calcularMotorPorFLA,
+  seleccionarConduit,
 } from "@/lib/formulas";
 
 describe("Ley de Ohm", () => {
@@ -550,5 +554,204 @@ describe("Factores de Corrección", () => {
   test("verifica selectividad - NO SELECTIVO", () => {
     const result = verificarSelectividad(25, 32);
     expect(result.unidad).toBe("NO SELECTIVO");
+  });
+});
+
+describe("CalculoAmpacidadCorregida", () => {
+  test("6mm² Cu, A1, Tres_PVC, 35°C, 1 circuito → Iz = 31×0.94×1.0 = 29.14A", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 6,
+      material: "Cobre",
+      metodo: "metodo_A1",
+      aislamiento: "Tres_PVC",
+      temperaturaAmbiente: 35,
+      numCircuitos: 1,
+      disposicion: "Empotrados o encerrados",
+    });
+    expect(result.valor).toBeCloseTo(29.1, 1);
+    expect(result.unidad).toBe("A");
+  });
+
+  test("25mm² Cu, C, Tres_PVC, 30°C, 3 circuitos empotrados → 110×1.0×0.70 = 77A", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 25,
+      material: "Cobre",
+      metodo: "metodo_C",
+      aislamiento: "Tres_PVC",
+      temperaturaAmbiente: 30,
+      numCircuitos: 3,
+      disposicion: "Empotrados o encerrados",
+    });
+    expect(result.valor).toBeCloseTo(77, 0);
+  });
+
+  test("combinación inválida → debe lanzar Error", () => {
+    expect(() =>
+      calcularAmpacidadCorregida({
+        seccion: 120,
+        material: "Aluminio",
+        metodo: "metodo_C",
+        aislamiento: "Tres_XLPE",
+        temperaturaAmbiente: 30,
+        numCircuitos: 1,
+        disposicion: "Empotrados o encerrados",
+      })
+    ).toThrow();
+  });
+
+  test("temperatura 40°C PVC → Ft = 0.87", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 10,
+      material: "Cobre",
+      metodo: "metodo_B1",
+      aislamiento: "Dos_PVC",
+      temperaturaAmbiente: 40,
+      numCircuitos: 1,
+      disposicion: "Empotrados o encerrados",
+    });
+    expect(result.valor).toBeCloseTo(49.59, 1); // 57 * 0.87 = 49.59
+  });
+});
+
+describe("CalculoCaidaTensionRX", () => {
+  test("10mm², 100m, 30A, 220V, cosφ=0.85, monofásico", () => {
+    const result = calcularCaidaTensionRX({
+      seccion: 10,
+      longitud: 100,
+      corriente: 30,
+      voltaje: 220,
+      cosPhi: 0.85,
+      sistema: "monofasico",
+    });
+    expect(result.valor).toBeGreaterThan(0);
+    expect(result.unidad).toBe("%");
+  });
+
+  test("35mm², 500m, 80A, 380V, cosφ=0.9, trifásico → verificar que X impacta resultado", () => {
+    const result = calcularCaidaTensionRX({
+      seccion: 35,
+      longitud: 500,
+      corriente: 80,
+      voltaje: 380,
+      cosPhi: 0.9,
+      sistema: "trifasico",
+    });
+    expect(result.valor).toBeGreaterThan(0);
+  });
+
+  test("resultado > 5% → verificar mensaje de no cumplimiento", () => {
+    const result = calcularCaidaTensionRX({
+      seccion: 4,
+      longitud: 500,
+      corriente: 50,
+      voltaje: 220,
+      cosPhi: 0.85,
+      sistema: "monofasico",
+    });
+    expect(result.nota).toContain("✗ No cumple");
+  });
+
+  test("sección pequeña → resultado bajo", () => {
+    const result = calcularCaidaTensionRX({
+      seccion: 1.5,
+      longitud: 50,
+      corriente: 10,
+      voltaje: 220,
+      cosPhi: 0.9,
+      sistema: "monofasico",
+    });
+    expect(result.valor).toBeGreaterThan(3);
+  });
+});
+
+describe("CalculoMotorPorFLA", () => {
+  test("5HP, 220V, directo → FLA=15.2, cable=2.5mm², ITM=40A", () => {
+    const result = calcularMotorPorFLA({
+      hp: 5,
+      tension: 220,
+      tipoArranque: "directo",
+      metodoInstalacion: "metodo_B1",
+      temperaturaAmbiente: 35,
+      numCircuitos: 1,
+    });
+    expect(result.valor).toBe(15.2);
+    expect(result.nota).toContain("Cable:");
+  });
+
+  test("10HP, 380V, estrella-triangulo → verificar factor 1.5", () => {
+    const result = calcularMotorPorFLA({
+      hp: 10,
+      tension: 380,
+      tipoArranque: "estrella-triangulo",
+      metodoInstalacion: "metodo_B1",
+      temperaturaAmbiente: 30,
+      numCircuitos: 1,
+    });
+    expect(result.valor).toBe(16.2);
+  });
+
+  test("HP no en tabla → debe lanzar Error", () => {
+    expect(() =>
+      calcularMotorPorFLA({
+        hp: 100,
+        tension: 220,
+        tipoArranque: "directo",
+        metodoInstalacion: "metodo_B1",
+        temperaturaAmbiente: 30,
+        numCircuitos: 1,
+      })
+    ).toThrow();
+  });
+
+  test("30HP, 440V → verificar resultado completo", () => {
+    const result = calcularMotorPorFLA({
+      hp: 30,
+      tension: 440,
+      tipoArranque: "directo",
+      metodoInstalacion: "metodo_B1",
+      temperaturaAmbiente: 35,
+      numCircuitos: 1,
+    });
+    expect(result.valor).toBe(40);
+  });
+});
+
+describe("SeleccionarConduit", () => {
+  test("3× cable 6mm² → área=86.7, factor 40% → Conduit 3/4", () => {
+    const result = seleccionarConduit({
+      conductores: [
+        { seccion: 6, cantidad: 3 },
+      ],
+    });
+    expect(result.nota).toContain("Conduit 3/4");
+  });
+
+  test("1× cable 35mm² → área=166.3, factor 53% → Conduit 3/4 (342mm² disponible)", () => {
+    const result = seleccionarConduit({
+      conductores: [
+        { seccion: 35, cantidad: 1 },
+      ],
+    });
+    expect(result.nota).toContain('Conduit 3/4"');
+  });
+
+  test("combinación que excede Conduit 2 → debe lanzar Error", () => {
+    expect(() =>
+      seleccionarConduit({
+        conductores: [
+          { seccion: 120, cantidad: 10 },
+        ],
+      })
+    ).toThrow();
+  });
+
+  test("sección no en tabla → debe lanzar Error", () => {
+    expect(() =>
+      seleccionarConduit({
+        conductores: [
+          { seccion: 300, cantidad: 1 },
+        ],
+      })
+    ).toThrow();
   });
 });
