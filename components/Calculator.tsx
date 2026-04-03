@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Zap,
   Gauge,
@@ -249,13 +249,9 @@ const categorias = [
 export default function Calculator() {
   const [calculoActivo, setCalculoActivo] = useState<TipoCalculo | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const isClient = useState(() => typeof window !== 'undefined')[0];
   const { theme, toggleTheme } = useTheme();
   const { togglePanel, history } = useHistory();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const opcionSeleccionada = menuItems.find((item) => item.id === calculoActivo);
 
@@ -583,7 +579,7 @@ export default function Calculator() {
         title="Ver historial"
       >
         <Clock size={24} />
-        {mounted && history.length > 0 && (
+        {isClient && history.length > 0 && (
           <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[var(--alert-red)] text-white text-xs flex items-center justify-center font-bold">
             {history.length > 9 ? '9+' : history.length}
           </span>

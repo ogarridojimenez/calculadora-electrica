@@ -1521,7 +1521,6 @@ export function calcularMotorPorFLA(params: CalculoMotorFLA): ResultadoCalculo {
   const ITM_elegido = ITM_comerciales.find(v => v >= I_proteccion) || 250;
   
   // Paso 4: Contactor
-  const corrienteArranque = FLA * 6;
   const contactor = [9, 12, 18, 25, 32, 40, 50, 65, 85, 115, 150, 180, 210, 260, 320, 400];
   const contactorElegido = contactor.find(v => v >= FLA) || 400;
   
