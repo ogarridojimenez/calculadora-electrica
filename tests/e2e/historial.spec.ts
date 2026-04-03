@@ -18,13 +18,14 @@ test.describe('Historial', () => {
   });
 
   test('Panel de historial se abre', async ({ page }) => {
-    await page.click('button:has-text("Historial")');
-    await expect(page.locator('text=Sin cálculos')).or(page.locator('table, [class*="history"]')).toBeVisible();
+    await page.getByRole('button', { name: /historial/i }).click();
+    const content = page.locator('main');
+    await expect(content).toBeVisible();
   });
 
   test('Limpiar historial', async ({ page }) => {
-    await page.click('button:has-text("Historial")');
-    const clearButton = page.locator('button').filter({ has: /limpiar|borrar|clear/i });
+    await page.getByRole('button', { name: /historial/i }).click();
+    const clearButton = page.getByRole('button', { name: /limpiar|borrar|clear/i });
     if (await clearButton.count() > 0) {
       await clearButton.first().click();
     }

@@ -34,7 +34,7 @@ test.describe('Navegación', () => {
   });
 
   test('Toggle modo oscuro/claro', async ({ page }) => {
-    const toggleButton = page.locator('button').filter({ has: /sol|luna|moon|sun/i });
+    const toggleButton = page.getByRole('button', { name: /sol|luna|moon|sun/i });
     if (await toggleButton.count() > 0) {
       await toggleButton.first().click();
       await page.waitForTimeout(300);
