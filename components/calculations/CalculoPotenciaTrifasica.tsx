@@ -23,6 +23,7 @@ export function CalculoPotenciaTrifasica() {
   const [fp, setFp] = useState("0.9");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
+  const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
   const { addToHistory } = useHistory();
 
@@ -63,14 +64,15 @@ export function CalculoPotenciaTrifasica() {
     return valido;
   };
 
-  const calcular = () => {
+  const calcular = async () => {
     setResultado(null);
-
-    if (!validarCampos()) {
-      return;
-    }
+    setIsLoading(true);
 
     try {
+      if (!validarCampos()) {
+        return;
+      }
+
       const params = {
         voltajeLinea: campoCalcular === "voltajeLinea" ? undefined : Number(voltajeLinea),
         corriente: campoCalcular === "corriente" ? undefined : Number(corriente),
@@ -82,6 +84,8 @@ export function CalculoPotenciaTrifasica() {
       showToast("Cálculo realizado exitosamente", "success");
     } catch (err) {
       showToast((err as Error).message, "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -221,9 +225,18 @@ export function CalculoPotenciaTrifasica() {
         </div>
       </div>
 
-      <button onClick={calcular} className="btn btn-primary w-full py-3">
-        <Zap size={18} />
-        Calcular
+      <button
+        onClick={calcular}
+        disabled={isLoading}
+        aria-busy={isLoading}
+        aria-label={isLoading ? "Calculando potencia trifásica" : "Calcular potencia trifásica"}
+        className={`btn btn-primary w-full py-3 transition-all duration-150
+          ${isLoading ? "btn-loading" : ""}
+          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]
+        `}
+      >
+        <Zap size={18} aria-hidden="true" />
+        {isLoading ? "Calculando..." : "Calcular"}
       </button>
 
       {resultado && (

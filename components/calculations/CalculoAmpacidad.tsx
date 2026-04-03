@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Zap, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
+import { Zap, CheckCircle, AlertTriangle, XCircle, Save } from "lucide-react";
 import { calcularAmpacidadCorregida, type CalculoAmpacidad, type ResultadoCalculo } from "@/lib/formulas";
+import { useToast } from "@/components/ToastProvider";
+import { useHistory } from "@/components/HistoryProvider";
 
 export function CalculoAmpacidad() {
   const [seccion, setSeccion] = useState<number>(6);
   const [material, setMaterial] = useState<'Cobre' | 'Aluminio'>('Cobre');
-  const [metodo, setMetodo] = useState<'metodo_A1' | 'metodo_B1' | 'metodo_C'>('metodo_A1');
+  const [metodo, setMetodo] = useState<'metodo_A1' | 'metodo_A2' | 'metodo_B1' | 'metodo_B2' | 'metodo_C' | 'metodo_E' | 'metodo_F'>('metodo_A1');
   const [aislamiento, setAislamiento] = useState<'Dos_PVC' | 'Tres_PVC' | 'Dos_XLPE' | 'Tres_XLPE'>('Tres_PVC');
   const [temperaturaAmbiente, setTemperaturaAmbiente] = useState<number>(35);
   const [numCircuitos, setNumCircuitos] = useState<number>(1);
@@ -15,29 +17,47 @@ export function CalculoAmpacidad() {
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [corrienteDiseño, setCorrienteDiseño] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
+  const { addToHistory } = useHistory();
 
-  const secciones = [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120];
+  const secciones = [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240];
   const metodos = [
-    { value: 'metodo_A1', label: 'A1: Cable unipolar en tubo empotrado en pared' },
-    { value: 'metodo_B1', label: 'B1: Cable unipolar en tubo en superficie o bandeja' },
-    { value: 'metodo_C', label: 'C: Cable multiconductor sobre pared o bandeja' }
+    { value: 'metodo_A1' as const, label: 'A1: Unipolar en tubo empotrado en pared' },
+    { value: 'metodo_A2' as const, label: 'A2: Multiconductor en tubo empotrado en pared' },
+    { value: 'metodo_B1' as const, label: 'B1: Unipolar en tubo en superficie o bandeja' },
+    { value: 'metodo_B2' as const, label: 'B2: Multiconductor en tubo en superficie' },
+    { value: 'metodo_C' as const, label: 'C: Cable sobre pared o bandeja' },
+    { value: 'metodo_E' as const, label: 'E: Cable al aire libre horizontal' },
+    { value: 'metodo_F' as const, label: 'F: Cable al aire libre vertical' }
   ];
   const aislamientos = [
-    { value: 'Dos_PVC', label: '2 conductores PVC (monofásico)' },
-    { value: 'Tres_PVC', label: '3 conductores PVC (trifásico)' },
-    { value: 'Dos_XLPE', label: '2 conductores XLPE (monofásico)' },
-    { value: 'Tres_XLPE', label: '3 conductores XLPE (trifásico)' }
+    { value: 'Dos_PVC' as const, label: '2 conductores PVC (monofásico)' },
+    { value: 'Tres_PVC' as const, label: '3 conductores PVC (trifásico)' },
+    { value: 'Dos_XLPE' as const, label: '2 conductores XLPE (monofásico)' },
+    { value: 'Tres_XLPE' as const, label: '3 conductores XLPE (trifásico)' }
   ];
   const disposiciones = [
     'Empotrados o encerrados',
-    'Sobre bandeja no perforada',
-    'Sobre bandeja perforada',
-    'En tubería en superficie'
+    'Una capa sobre paredes, pisos o bandejas no perforadas',
+    'Una capa fijada directamente debajo del techo',
+    'Una capa sobre bandejas horizontales perforadas o bandejas verticales',
+    'Una capa sobre soporte de cables tipo escalera o abrazaderas'
   ];
 
-  const calcular = () => {
+  // Get max circuits for selected disposition
+  const maxCircuitosPorDisposicion: Record<string, number> = {
+    'Empotrados o encerrados': 20,
+    'Una capa sobre paredes, pisos o bandejas no perforadas': 9,
+    'Una capa fijada directamente debajo del techo': 9,
+    'Una capa sobre bandejas horizontales perforadas o bandejas verticales': 9,
+    'Una capa sobre soporte de cables tipo escalera o abrazaderas': 9
+  };
+
+  const calcular = async () => {
     setResultado(null);
     setError(null);
+    setIsLoading(true);
 
     try {
       const params: CalculoAmpacidad = {
@@ -51,9 +71,39 @@ export function CalculoAmpacidad() {
       };
       const res = calcularAmpacidadCorregida(params);
       setResultado(res);
+      showToast("Cálculo de ampacidad completado", "success");
     } catch (err) {
       setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const guardarEnHistorial = () => {
+    if (!resultado) return;
+    const inputs: Record<string, string | number> = {
+      seccion,
+      material,
+      metodo,
+      aislamiento,
+      temperaturaAmbiente,
+      numCircuitos,
+      disposicion,
+    };
+    if (corrienteDiseño) {
+      inputs.corrienteDiseño = parseFloat(corrienteDiseño);
+    }
+    addToHistory({
+      nombre: "Ampacidad Corregida",
+      tipo: "ampacidad",
+      inputs,
+      resultado: {
+        valor: resultado.valor,
+        unidad: resultado.unidad,
+        formula: resultado.formula,
+      },
+    });
+    showToast("Guardado en historial", "success");
   };
 
   const verificarCumplimiento = () => {
@@ -78,13 +128,13 @@ export function CalculoAmpacidad() {
         </div>
         <div>
           <h2 className="text-xl font-semibold text-[var(--text-primary)]">Ampacidad Corregida</h2>
-          <p className="text-sm text-[var(--text-tertiary)]">NC IEC 60364-5-52</p>
+          <p className="text-sm text-[var(--text-tertiary)]">NC IEC 60364-5-52 (Métodos A-F)</p>
         </div>
       </div>
 
       <div className="info-box info-box-cyan">
         <p className="text-sm">
-          <strong>Cálculo de ampacidad:</strong> Iz = Ia × Ft × Fg. Considera temperatura ambiente y agrupamiento de circuitos según normativa cubana.
+          <strong>Cálculo de ampacidad:</strong> Iz = Ia × Ft × Fg. Considera temperatura ambiente y agrupamiento de circuitos según normativa cubana NC IEC 60364-5-52.
         </p>
       </div>
 
@@ -152,8 +202,12 @@ export function CalculoAmpacidad() {
               value={numCircuitos}
               onChange={(e) => setNumCircuitos(Number(e.target.value))}
               min={1}
+              max={maxCircuitosPorDisposicion[disposicion]}
               className="w-full px-3 py-2 rounded-md border bg-[var(--control-bg)] border-[var(--border-default)]"
             />
+            <p className="text-xs text-[var(--text-tertiary)] mt-1">
+              Máx. {maxCircuitosPorDisposicion[disposicion]} circuitos para esta disposición
+            </p>
           </div>
 
           <div className="md:col-span-2">
@@ -179,9 +233,15 @@ export function CalculoAmpacidad() {
           </div>
         </div>
 
-        <button onClick={calcular} className="btn btn-primary w-full py-3">
+        <button
+          onClick={calcular}
+          disabled={isLoading}
+          className={`btn btn-primary w-full py-3 transition-all duration-150 ${
+            isLoading ? "btn-loading" : ""
+          } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]`}
+        >
           <Zap size={18} />
-          Calcular
+          {isLoading ? "Calculando..." : "Calcular"}
         </button>
 
         {error && <p className="error-text">{error}</p>}
@@ -215,6 +275,11 @@ export function CalculoAmpacidad() {
               </span>
             </div>
           )}
+          
+          <button onClick={guardarEnHistorial} className="btn btn-secondary w-full mt-4">
+            <Save size={18} />
+            Guardar en historial
+          </button>
         </div>
       )}
     </div>

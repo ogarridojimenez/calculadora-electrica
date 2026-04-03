@@ -210,7 +210,7 @@ export function calcularSeccionConductor(params: CalculoConductor): ResultadoCal
     valor: seccionElegida,
     unidad: "mm²",
     formula: "S = I / K",
-    nota: `Sección mínima calculada: ${seccionMinima.toFixed(2)} mm²\nSección comercial elegida: ${seccionElegida} mm²\nMaterial: ${material === "cobre" ? "Cobre" : "Aluminio"}\nCapacidad de conducción: ${corriente} A\nNorma参考: NC 800`,
+    nota: `Sección mínima calculada: ${seccionMinima.toFixed(2)} mm²\nSección comercial elegida: ${seccionElegida} mm²\nMaterial: ${material === "cobre" ? "Cobre" : "Aluminio"}\nCapacidad de conducción: ${corriente} A\nNorma Ref:: NC 800`,
   };
 }
 
@@ -232,7 +232,7 @@ export function calcularProteccionMagnetotermica(params: CalculoProteccion): Res
     valor: proteccionElegida,
     unidad: "A",
     formula: `I_n = I_load × ${multiplicador}`,
-    nota: `Corriente de cálculo: ${corriente} A\nCorriente ajustada: ${corrienteProteccion.toFixed(1)} A\nInterruptor magnetotérmico elegido: ${proteccionElegida} A\nTipo de curva: ${tipoCarga === "motores" ? "C" : "B"}\nNorma参考: NC 801`,
+    nota: `Corriente de cálculo: ${corriente} A\nCorriente ajustada: ${corrienteProteccion.toFixed(1)} A\nInterruptor magnetotérmico elegido: ${proteccionElegida} A\nTipo de curva: ${tipoCarga === "motores" ? "C" : "B"}\nNorma Ref:: NC 801`,
   };
 }
 
@@ -333,7 +333,7 @@ export function calcularFlujoLuminoso(params: CalculoIluminacion): ResultadoCalc
     valor: flujoTotal,
     unidad: 'lm',
     formula: 'Φ_total = (E × A) / (η × fm)',
-    nota: `Iluminancia: ${iluminancia} lux\nÁrea: ${area} m²\nFactor de utilización: ${factorUtilizacion}\nFactor de mantenimiento: ${factorMantenimiento}\nNorma参考: NC 803`,
+    nota: `Iluminancia: ${iluminancia} lux\nÁrea: ${area} m²\nFactor de utilización: ${factorUtilizacion}\nFactor de mantenimiento: ${factorMantenimiento}\nNorma Ref:: NC 803`,
   };
 }
 
@@ -362,7 +362,7 @@ export function calcularIndiceLocal(largo: number, ancho: number, alturaMontaje:
     valor: k,
     unidad: '',
     formula: 'k = (a × b) / (h × (a + b))',
-    nota: `Largo: ${largo} m\nAncho: ${ancho} m\nAltura de montaje: ${alturaMontaje} m\nÍndice del local: ${k.toFixed(2)}\nNorma参考: NC 803`,
+    nota: `Largo: ${largo} m\nAncho: ${ancho} m\nAltura de montaje: ${alturaMontaje} m\nÍndice del local: ${k.toFixed(2)}\nNorma Ref:: NC 803`,
   };
 }
 
@@ -422,7 +422,7 @@ export function calcularCorrienteNominalMotor(params: CalculoMotor): ResultadoCa
     valor: corriente,
     unidad: 'A',
     formula: 'I_n = P / (√3 × V_L × η × cos(φ))',
-    nota: `Potencia: ${potencia} kW\nTensión: ${tension} V\nRendimiento: ${(rendimiento * 100).toFixed(1)}%\nFactor de potencia: ${factorPotencia}\nNorma参考: NC 804`,
+    nota: `Potencia: ${potencia} kW\nTensión: ${tension} V\nRendimiento: ${(rendimiento * 100).toFixed(1)}%\nFactor de potencia: ${factorPotencia}\nNorma Ref:: NC 804`,
   };
 }
 
@@ -456,7 +456,7 @@ export function calcularCorrienteArranque(corrienteNominal: number, tipoArranque
     valor: corrienteArranque,
     unidad: 'A',
     formula: `I_arr = ${kArr} × I_n`,
-    nota: `Corriente nominal: ${corrienteNominal.toFixed(2)} A\nFactor de arranque K_arr: ${kArr}\nTipo de arranque: ${nombreArranque}\nNorma参考: NC 804`,
+    nota: `Corriente nominal: ${corrienteNominal.toFixed(2)} A\nFactor de arranque K_arr: ${kArr}\nTipo de arranque: ${nombreArranque}\nNorma Ref:: NC 804`,
   };
 }
 
@@ -471,7 +471,7 @@ export function calcularProteccionMotor(corrienteNominal: number): ResultadoCalc
     valor: proteccionElegida,
     unidad: 'A',
     formula: 'I_protección = 1.15 × I_n',
-    nota: `Corriente nominal: ${corrienteNominal.toFixed(2)} A\nCorriente ajustada (115%): ${proteccion.toFixed(2)} A\nProtección térmica elegida: ${proteccionElegida} A\nNota: NC 804 usa 115% vs NC 801 que usa 125%\nNorma参考: NC 804`,
+    nota: `Corriente nominal: ${corrienteNominal.toFixed(2)} A\nCorriente ajustada (115%): ${proteccion.toFixed(2)} A\nProtección térmica elegida: ${proteccionElegida} A\nNota: NC 804 usa 115% vs NC 801 que usa 125%\nNorma Ref:: NC 804`,
   };
 }
 
@@ -487,7 +487,7 @@ export function calcularConductorMotor(corrienteNominal: number): ResultadoCalcu
     valor: seccion,
     unidad: 'mm²',
     formula: 'I_diseño = 1.25 × I_n → seleccionar sección',
-    nota: `Corriente nominal: ${corrienteNominal.toFixed(2)} A\nCorriente de diseño (125%): ${iDiseno.toFixed(2)} A\nSección recomendada: ${seccion} mm²\nCapacidad: ${capacidades[seccion as keyof typeof capacidades]} A\nNorma参考: NC 804`,
+    nota: `Corriente nominal: ${corrienteNominal.toFixed(2)} A\nCorriente de diseño (125%): ${iDiseno.toFixed(2)} A\nSección recomendada: ${seccion} mm²\nCapacidad: ${capacidades[seccion as keyof typeof capacidades]} A\nNorma Ref:: NC 804`,
   };
 }
 
@@ -506,7 +506,7 @@ export function calcularContactor(corrienteNominal: number, corrienteArranque: n
     valor: contactorMinimo,
     unidad: 'A',
     formula: 'I_contactor ≥ I_n',
-    nota: `Corriente nominal: ${corrienteNominal.toFixed(2)} A\nContactor mínimo: ${contactorMinimo} A\nRatio I_arr/I_n: ${ratioArranque.toFixed(1)}\nCategoría recomendada: ${categoria}\n${advertencia}\nNorma参考: IEC 60947-4`,
+    nota: `Corriente nominal: ${corrienteNominal.toFixed(2)} A\nContactor mínimo: ${contactorMinimo} A\nRatio I_arr/I_n: ${ratioArranque.toFixed(1)}\nCategoría recomendada: ${categoria}\n${advertencia}\nNorma Ref:: IEC 60947-4`,
   };
 }
 
@@ -540,7 +540,7 @@ export function calcularCortocircuitoTrifasico(params: CalculoCortocircuito): Re
     valor: icc,
     unidad: 'kA',
     formula: 'I_cc = V_L / (√3 × Z_total)',
-    nota: `Tensión de línea: ${tensionLinea} V\nLongitud: ${longitud} m\nSección: ${seccion} mm²\nMaterial: ${material === 'cobre' ? 'Cobre' : 'Aluminio'}\nR_total: ${rTotal.toFixed(4)} Ω\nZ_total: ${zTotal.toFixed(4)} Ω\nI_cc: ${icc.toFixed(2)} kA\nNorma参考: NC 801`,
+    nota: `Tensión de línea: ${tensionLinea} V\nLongitud: ${longitud} m\nSección: ${seccion} mm²\nMaterial: ${material === 'cobre' ? 'Cobre' : 'Aluminio'}\nR_total: ${rTotal.toFixed(4)} Ω\nZ_total: ${zTotal.toFixed(4)} Ω\nI_cc: ${icc.toFixed(2)} kA\nNorma Ref:: NC 801`,
   };
 }
 
@@ -554,7 +554,7 @@ export function verificarPoderCorte(icc: number, poderCorte: number): ResultadoC
     valor: esApto ? 1 : 0,
     unidad: esApto ? 'APTO' : 'NO APTO',
     formula: 'I_cc ≤ I_cu del interruptor',
-    nota: `I_cc calculada: ${icc.toFixed(2)} kA\nPoder de corte del interruptor: ${poderCorte} kA\n${esApto ? '✓ APTO - El interruptor puede cortar esta corriente' : '✗ NO APTO - Interruptor insuficiente'}\nNorma参考: NC 801`,
+    nota: `I_cc calculada: ${icc.toFixed(2)} kA\nPoder de corte del interruptor: ${poderCorte} kA\n${esApto ? '✓ APTO - El interruptor puede cortar esta corriente' : '✗ NO APTO - Interruptor insuficiente'}\nNorma Ref:: NC 801`,
   };
 }
 
@@ -573,7 +573,7 @@ export function calcularCortocircuitoMonofasico(params: CalculoCortocircuito): R
     valor: iccMin,
     unidad: 'A',
     formula: 'I_cc_min = 0.8 × V_fase / (2 × Z)',
-    nota: `Tensión de fase: ${tensionFase} V\nLongitud: ${longitud} m\nSección: ${seccion} mm²\nMaterial: ${material === 'cobre' ? 'Cobre' : 'Aluminio'}\nZ_conductor: ${zConductor.toFixed(4)} Ω\nI_cc_mín: ${iccMin.toFixed(2)} A (monofásico)\nFactor 0.8 según NC 801 para condición mínima\nNorma参考: NC 801`,
+    nota: `Tensión de fase: ${tensionFase} V\nLongitud: ${longitud} m\nSección: ${seccion} mm²\nMaterial: ${material === 'cobre' ? 'Cobre' : 'Aluminio'}\nZ_conductor: ${zConductor.toFixed(4)} Ω\nI_cc_mín: ${iccMin.toFixed(2)} A (monofásico)\nFactor 0.8 según NC 801 para condición mínima\nNorma Ref:: NC 801`,
   };
 }
 
@@ -604,7 +604,7 @@ export function calcularConductorTierra(seccionFase: number): ResultadoCalculo {
     valor: seccionPE,
     unidad: 'mm²',
     formula: 'S_PE según NC 802',
-    nota: `Sección de fase: ${seccionFase} mm²\nSección PE recomendada: ${seccionPE} mm²\n${nota}\nNorma参考: NC 802 / IEC 60364-5-54`,
+    nota: `Sección de fase: ${seccionFase} mm²\nSección PE recomendada: ${seccionPE} mm²\n${nota}\nNorma Ref:: NC 802 / IEC 60364-5-54`,
   };
 }
 
@@ -628,7 +628,7 @@ export function calcularResistenciaElectrodo(params: CalculoResistenciaElectrodo
     valor: resistencia,
     unidad: 'Ω',
     formula: 'R = (ρ / 2πL) × ln(4L/d)',
-    nota: `Resistividad del suelo: ${resistividad} Ω·m\nLongitud del electrodo: ${longitudElectrodo} m\nDiámetro del electrodo: ${diametroElectrodo} m\nResistencia: ${resistencia.toFixed(2)} Ω\n${cumple ? '✓ CUMPLE con NC 802 (≤25Ω)' : '✗ NO CUMPLE - necesita electrodos en paralelo'}\nNorma参考: NC 802`,
+    nota: `Resistividad del suelo: ${resistividad} Ω·m\nLongitud del electrodo: ${longitudElectrodo} m\nDiámetro del electrodo: ${diametroElectrodo} m\nResistencia: ${resistencia.toFixed(2)} Ω\n${cumple ? '✓ CUMPLE con NC 802 (≤25Ω)' : '✗ NO CUMPLE - necesita electrodos en paralelo'}\nNorma Ref:: NC 802`,
   };
 }
 
@@ -644,7 +644,7 @@ export function calcularElectrodosParalelo(resistenciaIndividual: number, numero
     valor: resistenciaParalelo,
     unidad: 'Ω',
     formula: 'R_paralelo = R / (n × η_p)',
-    nota: `Resistencia de un electrodo: ${resistenciaIndividual.toFixed(2)} Ω\nNúmero de electrodos: ${numeroElectrodos}\nFactor de eficiencia: ${etaP}\nResistencia en paralelo: ${resistenciaParalelo.toFixed(2)} Ω\n${cumple ? '✓ CUMPLE con NC 802 (≤25Ω)' : '✗ NO CUMPLE - aumentar electrodos'}\nNorma参考: NC 802`,
+    nota: `Resistencia de un electrodo: ${resistenciaIndividual.toFixed(2)} Ω\nNúmero de electrodos: ${numeroElectrodos}\nFactor de eficiencia: ${etaP}\nResistencia en paralelo: ${resistenciaParalelo.toFixed(2)} Ω\n${cumple ? '✓ CUMPLE con NC 802 (≤25Ω)' : '✗ NO CUMPLE - aumentar electrodos'}\nNorma Ref:: NC 802`,
   };
 }
 
@@ -690,7 +690,7 @@ export function calcularDemandaMaxima(params: CalculoDemanda): ResultadoCalculo 
     valor: demandaKW,
     unidad: 'kW',
     formula: 'D_max = Σ(P_i × fd_i) / fp',
-    nota: `${detalle}\nDemanda máxima: ${demandaKW.toFixed(2)} kW\nDemanda aparente: ${demandaKVA.toFixed(2)} kVA\nFactor de potencia: ${factorPotencia}\nNorma参考: NC 800`,
+    nota: `${detalle}\nDemanda máxima: ${demandaKW.toFixed(2)} kW\nDemanda aparente: ${demandaKVA.toFixed(2)} kVA\nFactor de potencia: ${factorPotencia}\nNorma Ref:: NC 800`,
   };
 }
 
@@ -712,7 +712,7 @@ export function calcularCorrienteAcometida(demandaKW: number, tension: number, f
     valor: corriente,
     unidad: 'A',
     formula: sistema === 'trifasico' ? 'I = D / (√3 × V_L × cos(φ))' : 'I = D / (V × cos(φ))',
-    nota: `Demanda: ${demandaKW.toFixed(2)} kW\nTensión: ${tension} V (${sistema})\nFactor de potencia: ${factorPotencia}\nCorriente de acometida: ${corriente.toFixed(2)} A\nNorma参考: NC 800`,
+    nota: `Demanda: ${demandaKW.toFixed(2)} kW\nTensión: ${tension} V (${sistema})\nFactor de potencia: ${factorPotencia}\nCorriente de acometida: ${corriente.toFixed(2)} A\nNorma Ref:: NC 800`,
   };
 }
 
@@ -733,7 +733,7 @@ export function calcularDemandaResidencial(potenciaInstalada: number): Resultado
     valor: demanda,
     unidad: 'W',
     formula: 'D = 1500 + 0.4 × P_adicional',
-    nota: `Potencia instalada: ${potenciaInstalada} W\nCarga básica: ${cargaBasica} W\nPotencia adicional: ${potenciaInstalada > cargaBasica ? potenciaInstalada - cargaBasica : 0} W\nDemanda calculada: ${demanda.toFixed(0)} W\nMétodo simplificado NC 800 para viviendas\nNorma参考: NC 800 Anexo`,
+    nota: `Potencia instalada: ${potenciaInstalada} W\nCarga básica: ${cargaBasica} W\nPotencia adicional: ${potenciaInstalada > cargaBasica ? potenciaInstalada - cargaBasica : 0} W\nDemanda calculada: ${demanda.toFixed(0)} W\nMétodo simplificado NC 800 para viviendas\nNorma Ref:: NC 800 Anexo`,
   };
 }
 
@@ -785,7 +785,7 @@ export function calcularOcupacionTubo(params: CalculoOcupacionTubo): ResultadoCa
     valor: ocupacion,
     unidad: '%',
     formula: '%Ocup = (Σ Áreas / Área_tubo) × 100',
-    nota: `Área total conductores: ${areaTotalConductores.toFixed(2)} mm²\nÁrea interior tubo: ${areaTubo.toFixed(2)} mm²\nOcupación: ${ocupacion.toFixed(1)}%\nMáximo permitido (${numConductores} conductors): ${maxOcupacion}%\n${cumple ? '✓ CUMPLE con NC 800' : '✗ NO CUMPLE - aumentar diámetro del tubo'}\nNorma参考: NC 800 / IEC`,
+    nota: `Área total conductores: ${areaTotalConductores.toFixed(2)} mm²\nÁrea interior tubo: ${areaTubo.toFixed(2)} mm²\nOcupación: ${ocupacion.toFixed(1)}%\nMáximo permitido (${numConductores} conductors): ${maxOcupacion}%\n${cumple ? '✓ CUMPLE con NC 800' : '✗ NO CUMPLE - aumentar diámetro del tubo'}\nNorma Ref:: NC 800 / IEC`,
   };
 }
 
@@ -812,7 +812,7 @@ export function aplicarFactoresCorreccion(corriente: number, temperatura: number
     valor: corrienteCorregida,
     unidad: 'A',
     formula: 'I_corr = I / (fc × fg)',
-    nota: `Corriente original: ${corriente} A\nTemperatura ambiente: ${temperatura}°C → fc = ${fc}\nConductores agrupados: ${numConductores} → fg = ${fg}\nFactor total: ${(fc * fg).toFixed(2)}\nCorriente corregida: ${corrienteCorregida.toFixed(2)} A\nNorma参考: NC 800`,
+    nota: `Corriente original: ${corriente} A\nTemperatura ambiente: ${temperatura}°C → fc = ${fc}\nConductores agrupados: ${numConductores} → fg = ${fg}\nFactor total: ${(fc * fg).toFixed(2)}\nCorriente corregida: ${corrienteCorregida.toFixed(2)} A\nNorma Ref:: NC 800`,
   };
 }
 
@@ -826,7 +826,7 @@ export function verificarSelectividad(InAguasAbajo: number, InAguasArriba: numbe
     valor: esSelectivo ? 1 : 0,
     unidad: esSelectivo ? 'SELECTIVO' : 'NO SELECTIVO',
     formula: 'In_abajo < In_arriba × 0.5',
-    nota: `I_n aguas abajo: ${InAguasAbajo} A\nI_n aguas arriba: ${InAguasArriba} A\nRelación: ${(InAguasAbajo / InAguasArriba).toFixed(2)}\n${esSelectivo ? '✓ SELECTIVO - Coordinación correcta' : '⚠️ NO SELECTIVO - Revisar coordinación'}\nNorma参考: NC 801`,
+    nota: `I_n aguas abajo: ${InAguasAbajo} A\nI_n aguas arriba: ${InAguasArriba} A\nRelación: ${(InAguasAbajo / InAguasArriba).toFixed(2)}\n${esSelectivo ? '✓ SELECTIVO - Coordinación correcta' : '⚠️ NO SELECTIVO - Revisar coordinación'}\nNorma Ref:: NC 801`,
   };
 }
 
@@ -867,10 +867,24 @@ export const TABLA_B52_1 = {
       ]
     },
     Aluminio: {
-      Dos_PVC: [
-        {mm2:16,amp:47},{mm2:25,amp:61},{mm2:35,amp:75},{mm2:50,amp:90},
-        {mm2:70,amp:115},{mm2:95,amp:138},{mm2:120,amp:159}
-      ]
+      Dos_PVC: [{mm2:2.5,amp:15},{mm2:4,amp:20},{mm2:6,amp:26},{mm2:10,amp:36},{mm2:16,amp:48},{mm2:25,amp:63}],
+      Tres_PVC: [{mm2:2.5,amp:14},{mm2:4,amp:18.5},{mm2:6,amp:24},{mm2:10,amp:32},{mm2:16,amp:43},{mm2:25,amp:57},{mm2:35,amp:70},{mm2:50,amp:86},{mm2:70,amp:110},{mm2:95,amp:133},{mm2:120,amp:154}],
+      Dos_XLPE: [{mm2:2.5,amp:19.5},{mm2:4,amp:26},{mm2:6,amp:33},{mm2:10,amp:46},{mm2:16,amp:61},{mm2:25,amp:78},{mm2:35,amp:96},{mm2:50,amp:117},{mm2:70,amp:150},{mm2:95,amp:183},{mm2:120,amp:212},{mm2:150,amp:245},{mm2:185,amp:280},{mm2:240,amp:330}],
+      Tres_XLPE: [{mm2:2.5,amp:18.5},{mm2:4,amp:25},{mm2:6,amp:32},{mm2:10,amp:44},{mm2:16,amp:58},{mm2:25,amp:73},{mm2:35,amp:90},{mm2:50,amp:110},{mm2:70,amp:140},{mm2:95,amp:170},{mm2:120,amp:197},{mm2:150,amp:226},{mm2:185,amp:256},{mm2:240,amp:300}]
+    }
+  },
+  metodo_A2: {
+    Cobre: {
+      Dos_PVC: [{mm2:1.5,amp:13.5},{mm2:2.5,amp:18},{mm2:4,amp:24},{mm2:6,amp:31},{mm2:10,amp:42},{mm2:16,amp:56},{mm2:25,amp:73}],
+      Tres_PVC: [{mm2:1.5,amp:13},{mm2:2.5,amp:17.5},{mm2:4,amp:23},{mm2:6,amp:30},{mm2:10,amp:39},{mm2:16,amp:52},{mm2:25,amp:68}],
+      Dos_XLPE: [{mm2:1.5,amp:17},{mm2:2.5,amp:23},{mm2:4,amp:31},{mm2:6,amp:40},{mm2:10,amp:54},{mm2:16,amp:73},{mm2:25,amp:95},{mm2:35,amp:117},{mm2:50,amp:141},{mm2:70,amp:179},{mm2:95,amp:216},{mm2:120,amp:249},{mm2:150,amp:285},{mm2:185,amp:324},{mm2:240,amp:380}],
+      Tres_XLPE: [{mm2:1.5,amp:15.5},{mm2:2.5,amp:21},{mm2:4,amp:28},{mm2:6,amp:36},{mm2:10,amp:50},{mm2:16,amp:68},{mm2:25,amp:89},{mm2:35,amp:110},{mm2:50,amp:134},{mm2:70,amp:171},{mm2:95,amp:207},{mm2:120,amp:239}]
+    },
+    Aluminio: {
+      Dos_PVC: [{mm2:2.5,amp:14},{mm2:4,amp:18.5},{mm2:6,amp:24},{mm2:10,amp:32},{mm2:16,amp:43},{mm2:25,amp:57}],
+      Tres_PVC: [{mm2:2.5,amp:13.5},{mm2:4,amp:17.5},{mm2:6,amp:23},{mm2:10,amp:31},{mm2:16,amp:41},{mm2:25,amp:53}],
+      Dos_XLPE: [{mm2:2.5,amp:18.5},{mm2:4,amp:25},{mm2:6,amp:32},{mm2:10,amp:44},{mm2:16,amp:58},{mm2:25,amp:73},{mm2:35,amp:90},{mm2:50,amp:110},{mm2:70,amp:140},{mm2:95,amp:170},{mm2:120,amp:197},{mm2:150,amp:226},{mm2:185,amp:256},{mm2:240,amp:300}],
+      Tres_XLPE: [{mm2:2.5,amp:16.5},{mm2:4,amp:22},{mm2:6,amp:28},{mm2:10,amp:39},{mm2:16,amp:53},{mm2:25,amp:70},{mm2:35,amp:86},{mm2:50,amp:104},{mm2:70,amp:133},{mm2:95,amp:161},{mm2:120,amp:186}]
     }
   },
   metodo_B1: {
@@ -884,7 +898,29 @@ export const TABLA_B52_1 = {
         {mm2:1.5,amp:15.5},{mm2:2.5,amp:21},{mm2:4,amp:28},{mm2:6,amp:36},
         {mm2:10,amp:50},{mm2:16,amp:68},{mm2:25,amp:89},{mm2:35,amp:110},
         {mm2:50,amp:134},{mm2:70,amp:171},{mm2:95,amp:207},{mm2:120,amp:239}
-      ]
+      ],
+      Dos_XLPE: [{mm2:1.5,amp:24},{mm2:2.5,amp:32},{mm2:4,amp:42},{mm2:6,amp:58},{mm2:10,amp:77},{mm2:16,amp:85},{mm2:25,amp:97},{mm2:35,amp:120},{mm2:50,amp:146},{mm2:70,amp:187},{mm2:95,amp:227},{mm2:120,amp:263},{mm2:150,amp:304},{mm2:185,amp:347},{mm2:240,amp:409}],
+      Tres_XLPE: [{mm2:1.5,amp:21},{mm2:2.5,amp:28},{mm2:4,amp:36},{mm2:6,amp:49},{mm2:10,amp:66},{mm2:16,amp:66},{mm2:25,amp:83},{mm2:35,amp:103},{mm2:50,amp:125},{mm2:70,amp:160},{mm2:95,amp:195},{mm2:120,amp:226},{mm2:150,amp:261},{mm2:185,amp:298},{mm2:240,amp:352}]
+    },
+    Aluminio: {
+      Dos_PVC: [{mm2:2.5,amp:16.5},{mm2:4,amp:22},{mm2:6,amp:28},{mm2:10,amp:39},{mm2:16,amp:53},{mm2:25,amp:70},{mm2:35,amp:86},{mm2:50,amp:104},{mm2:70,amp:133},{mm2:95,amp:161},{mm2:120,amp:186}],
+      Tres_PVC: [{mm2:2.5,amp:18.5},{mm2:4,amp:25},{mm2:6,amp:32},{mm2:10,amp:44},{mm2:16,amp:58},{mm2:25,amp:73},{mm2:35,amp:90},{mm2:50,amp:110},{mm2:70,amp:140},{mm2:95,amp:170},{mm2:120,amp:197}],
+      Dos_XLPE: [{mm2:2.5,amp:24},{mm2:4,amp:32},{mm2:6,amp:42},{mm2:10,amp:58},{mm2:16,amp:77},{mm2:25,amp:97},{mm2:35,amp:120},{mm2:50,amp:146},{mm2:70,amp:187},{mm2:95,amp:227},{mm2:120,amp:263},{mm2:150,amp:304},{mm2:185,amp:347},{mm2:240,amp:409}],
+      Tres_XLPE: [{mm2:2.5,amp:21},{mm2:4,amp:28},{mm2:6,amp:36},{mm2:10,amp:49},{mm2:16,amp:66},{mm2:25,amp:83},{mm2:35,amp:103},{mm2:50,amp:125},{mm2:70,amp:160},{mm2:95,amp:195},{mm2:120,amp:226},{mm2:150,amp:261},{mm2:185,amp:298},{mm2:240,amp:352}]
+    }
+  },
+  metodo_B2: {
+    Cobre: {
+      Dos_PVC: [{mm2:1.5,amp:15.5},{mm2:2.5,amp:21},{mm2:4,amp:28},{mm2:6,amp:36},{mm2:10,amp:50},{mm2:16,amp:68},{mm2:25,amp:89},{mm2:35,amp:110},{mm2:50,amp:134},{mm2:70,amp:171},{mm2:95,amp:207},{mm2:120,amp:239}],
+      Tres_PVC: [{mm2:1.5,amp:14.5},{mm2:2.5,amp:19.5},{mm2:4,amp:26},{mm2:6,amp:34},{mm2:10,amp:46},{mm2:16,amp:61},{mm2:25,amp:80}],
+      Dos_XLPE: [{mm2:1.5,amp:19.5},{mm2:2.5,amp:27},{mm2:4,amp:36},{mm2:6,amp:46},{mm2:10,amp:63},{mm2:16,amp:85},{mm2:25,amp:110},{mm2:35,amp:137},{mm2:50,amp:167},{mm2:70,amp:213},{mm2:95,amp:258},{mm2:120,amp:299},{mm2:150,amp:344},{mm2:185,amp:392},{mm2:240,amp:461}],
+      Tres_XLPE: [{mm2:1.5,amp:18.5},{mm2:2.5,amp:25},{mm2:4,amp:34},{mm2:6,amp:43},{mm2:10,amp:60},{mm2:16,amp:80},{mm2:25,amp:101},{mm2:35,amp:126},{mm2:50,amp:153},{mm2:70,amp:196},{mm2:95,amp:238},{mm2:120,amp:276},{mm2:150,amp:318},{mm2:185,amp:362},{mm2:240,amp:424}]
+    },
+    Aluminio: {
+      Dos_PVC: [{mm2:2.5,amp:16.5},{mm2:4,amp:22},{mm2:6,amp:28},{mm2:10,amp:39},{mm2:16,amp:53},{mm2:25,amp:70},{mm2:35,amp:86},{mm2:50,amp:104},{mm2:70,amp:133},{mm2:95,amp:161},{mm2:120,amp:186}],
+      Tres_PVC: [{mm2:2.5,amp:15},{mm2:4,amp:20},{mm2:6,amp:26},{mm2:10,amp:36},{mm2:16,amp:48},{mm2:25,amp:63}],
+      Dos_XLPE: [{mm2:2.5,amp:21},{mm2:4,amp:28},{mm2:6,amp:36},{mm2:10,amp:49},{mm2:16,amp:66},{mm2:25,amp:83},{mm2:35,amp:103},{mm2:50,amp:125},{mm2:70,amp:160},{mm2:95,amp:195},{mm2:120,amp:226},{mm2:150,amp:261},{mm2:185,amp:298},{mm2:240,amp:352}],
+      Tres_XLPE: [{mm2:2.5,amp:19.5},{mm2:4,amp:26},{mm2:6,amp:33},{mm2:10,amp:46},{mm2:16,amp:61},{mm2:25,amp:78},{mm2:35,amp:96},{mm2:50,amp:117},{mm2:70,amp:150},{mm2:95,amp:183},{mm2:120,amp:212},{mm2:150,amp:245},{mm2:185,amp:280},{mm2:240,amp:330}]
     }
   },
   metodo_C: {
@@ -899,26 +935,122 @@ export const TABLA_B52_1 = {
         {mm2:10,amp:63},{mm2:16,amp:85},{mm2:25,amp:110},{mm2:35,amp:137},
         {mm2:50,amp:167},{mm2:70,amp:214},{mm2:95,amp:261},{mm2:120,amp:300}
       ]
+    },
+    Aluminio: {
+      Dos_PVC: [{mm2:16,amp:48},{mm2:25,amp:63},{mm2:35,amp:77},{mm2:50,amp:94},{mm2:70,amp:120},{mm2:95,amp:146},{mm2:120,amp:169},{mm2:150,amp:195},{mm2:185,amp:221},{mm2:240,amp:260}],
+      Tres_PVC: [{mm2:16,amp:43},{mm2:25,amp:57},{mm2:35,amp:70},{mm2:50,amp:86},{mm2:70,amp:110},{mm2:95,amp:133},{mm2:120,amp:154},{mm2:150,amp:178},{mm2:185,amp:201},{mm2:240,amp:236}],
+      Dos_XLPE: [{mm2:16,amp:61},{mm2:25,amp:78},{mm2:35,amp:96},{mm2:50,amp:117},{mm2:70,amp:150},{mm2:95,amp:183},{mm2:120,amp:212},{mm2:150,amp:245},{mm2:185,amp:280},{mm2:240,amp:330}],
+      Tres_XLPE: [{mm2:16,amp:58},{mm2:25,amp:73},{mm2:35,amp:90},{mm2:50,amp:110},{mm2:70,amp:140},{mm2:95,amp:170},{mm2:120,amp:197},{mm2:150,amp:226},{mm2:185,amp:256},{mm2:240,amp:300}]
+    }
+  },
+  metodo_E: {
+    Cobre: {
+      Dos_PVC: [{mm2:1.5,amp:22},{mm2:2.5,amp:30},{mm2:4,amp:40},{mm2:6,amp:51},{mm2:10,amp:70},{mm2:16,amp:94},{mm2:25,amp:119},{mm2:35,amp:147},{mm2:50,amp:179},{mm2:70,amp:229},{mm2:95,amp:278},{mm2:120,amp:322},{mm2:150,amp:371},{mm2:185,amp:424},{mm2:240,amp:500}],
+      Tres_PVC: [{mm2:1.5,amp:18.5},{mm2:2.5,amp:25},{mm2:4,amp:34},{mm2:6,amp:43},{mm2:10,amp:60},{mm2:16,amp:80},{mm2:25,amp:101},{mm2:35,amp:126},{mm2:50,amp:153},{mm2:70,amp:196},{mm2:95,amp:238},{mm2:120,amp:276},{mm2:150,amp:318},{mm2:185,amp:362},{mm2:240,amp:424}],
+      Dos_XLPE: [{mm2:1.5,amp:26},{mm2:2.5,amp:36},{mm2:4,amp:49},{mm2:6,amp:63},{mm2:10,amp:86},{mm2:16,amp:115},{mm2:25,amp:149},{mm2:35,amp:185},{mm2:50,amp:225},{mm2:70,amp:289},{mm2:95,amp:352},{mm2:120,amp:410},{mm2:150,amp:473},{mm2:185,amp:542},{mm2:240,amp:641}],
+      Tres_XLPE: [{mm2:1.5,amp:23},{mm2:2.5,amp:31},{mm2:4,amp:42},{mm2:6,amp:54},{mm2:10,amp:75},{mm2:16,amp:100},{mm2:25,amp:127},{mm2:35,amp:158},{mm2:50,amp:192},{mm2:70,amp:246},{mm2:95,amp:298},{mm2:120,amp:346},{mm2:150,amp:395},{mm2:185,amp:450},{mm2:240,amp:538}]
+    },
+    Aluminio: {
+      Dos_PVC: [{mm2:16,amp:61},{mm2:25,amp:78},{mm2:35,amp:96},{mm2:50,amp:117},{mm2:70,amp:150},{mm2:95,amp:183},{mm2:120,amp:212},{mm2:150,amp:245},{mm2:185,amp:280},{mm2:240,amp:330}],
+      Tres_PVC: [{mm2:16,amp:53},{mm2:25,amp:70},{mm2:35,amp:86},{mm2:50,amp:104},{mm2:70,amp:133},{mm2:95,amp:161},{mm2:120,amp:186},{mm2:150,amp:213},{mm2:185,amp:240},{mm2:240,amp:277}],
+      Dos_XLPE: [{mm2:16,amp:77},{mm2:25,amp:97},{mm2:35,amp:120},{mm2:50,amp:146},{mm2:70,amp:187},{mm2:95,amp:227},{mm2:120,amp:263},{mm2:150,amp:304},{mm2:185,amp:347},{mm2:240,amp:409}],
+      Tres_XLPE: [{mm2:16,amp:66},{mm2:25,amp:83},{mm2:35,amp:103},{mm2:50,amp:125},{mm2:70,amp:160},{mm2:95,amp:195},{mm2:120,amp:226},{mm2:150,amp:261},{mm2:185,amp:298},{mm2:240,amp:352}]
+    }
+  },
+  metodo_F: {
+    Cobre: {
+      Dos_PVC: [{mm2:1.5,amp:23},{mm2:2.5,amp:31},{mm2:4,amp:42},{mm2:6,amp:54},{mm2:10,amp:75},{mm2:16,amp:100},{mm2:25,amp:127},{mm2:35,amp:158},{mm2:50,amp:192},{mm2:70,amp:246},{mm2:95,amp:298},{mm2:120,amp:346},{mm2:150,amp:395},{mm2:185,amp:450},{mm2:240,amp:538}],
+      Tres_PVC: [{mm2:1.5,amp:19.5},{mm2:2.5,amp:27},{mm2:4,amp:36},{mm2:6,amp:46},{mm2:10,amp:63},{mm2:16,amp:85},{mm2:25,amp:110},{mm2:35,amp:137},{mm2:50,amp:167},{mm2:70,amp:213},{mm2:95,amp:258},{mm2:120,amp:299},{mm2:150,amp:344},{mm2:185,amp:392},{mm2:240,amp:461}],
+      Dos_XLPE: [{mm2:1.5,amp:28},{mm2:2.5,amp:38},{mm2:4,amp:50},{mm2:6,amp:64},{mm2:10,amp:87},{mm2:16,amp:116},{mm2:25,amp:150},{mm2:35,amp:186},{mm2:50,amp:227},{mm2:70,amp:291},{mm2:95,amp:355},{mm2:120,amp:413},{mm2:150,amp:476},{mm2:185,amp:546},{mm2:240,amp:645}],
+      Tres_XLPE: [{mm2:1.5,amp:24},{mm2:2.5,amp:33},{mm2:4,amp:45},{mm2:6,amp:58},{mm2:10,amp:80},{mm2:16,amp:107},{mm2:25,amp:135},{mm2:35,amp:169},{mm2:50,amp:207},{mm2:70,amp:268},{mm2:95,amp:328},{mm2:120,amp:382},{mm2:150,amp:441},{mm2:185,amp:506},{mm2:240,amp:599}]
+    },
+    Aluminio: {
+      Dos_PVC: [{mm2:16,amp:66},{mm2:25,amp:83},{mm2:35,amp:103},{mm2:50,amp:125},{mm2:70,amp:160},{mm2:95,amp:195},{mm2:120,amp:226},{mm2:150,amp:261},{mm2:185,amp:298},{mm2:240,amp:352}],
+      Tres_PVC: [{mm2:16,amp:58},{mm2:25,amp:73},{mm2:35,amp:90},{mm2:50,amp:110},{mm2:70,amp:140},{mm2:95,amp:170},{mm2:120,amp:197},{mm2:150,amp:226},{mm2:185,amp:256},{mm2:240,amp:300}],
+      Dos_XLPE: [{mm2:16,amp:77},{mm2:25,amp:97},{mm2:35,amp:120},{mm2:50,amp:146},{mm2:70,amp:187},{mm2:95,amp:227},{mm2:120,amp:263},{mm2:150,amp:304},{mm2:185,amp:347},{mm2:240,amp:409}],
+      Tres_XLPE: []
+    }
+  }
+} as const;
+
+/**
+ * TABLA B.52-2 — Método D: Cables directamente enterrados o en ductos subterráneos
+ * @norma NC IEC 60364-5-52:2004 Tabla B.52-2
+ */
+export const TABLA_B52_2 = {
+  metodo_D: {
+    Cobre: {
+      Dos_PVC: [
+        {mm2:1.5,amp:22},{mm2:2.5,amp:29},{mm2:4,amp:38},{mm2:6,amp:47},{mm2:10,amp:63},{mm2:16,amp:81},
+        {mm2:25,amp:104},{mm2:35,amp:125},{mm2:50,amp:148},{mm2:70,amp:183},{mm2:95,amp:216},
+        {mm2:120,amp:246},{mm2:150,amp:278},{mm2:185,amp:312},{mm2:240,amp:361},{mm2:300,amp:408}
+      ],
+      Tres_PVC: [
+        {mm2:1.5,amp:18},{mm2:2.5,amp:24},{mm2:4,amp:31},{mm2:6,amp:39},{mm2:10,amp:52},{mm2:16,amp:67},
+        {mm2:25,amp:86},{mm2:35,amp:103},{mm2:50,amp:122},{mm2:70,amp:151},{mm2:95,amp:179},
+        {mm2:120,amp:203},{mm2:150,amp:230},{mm2:185,amp:258},{mm2:240,amp:297},{mm2:300,amp:336}
+      ],
+      Dos_XLPE: [
+        {mm2:1.5,amp:26},{mm2:2.5,amp:34},{mm2:4,amp:44},{mm2:6,amp:56},{mm2:10,amp:73},{mm2:16,amp:95},
+        {mm2:25,amp:121},{mm2:35,amp:146},{mm2:50,amp:173},{mm2:70,amp:213},{mm2:95,amp:252},
+        {mm2:120,amp:287},{mm2:150,amp:324},{mm2:185,amp:363},{mm2:240,amp:419},{mm2:300,amp:474}
+      ],
+      Tres_XLPE: [
+        {mm2:1.5,amp:22},{mm2:2.5,amp:29},{mm2:4,amp:37},{mm2:6,amp:46},{mm2:10,amp:61},{mm2:16,amp:79},
+        {mm2:25,amp:101},{mm2:35,amp:122},{mm2:50,amp:144},{mm2:70,amp:178},{mm2:95,amp:211},
+        {mm2:120,amp:240},{mm2:150,amp:271},{mm2:185,amp:304},{mm2:240,amp:351},{mm2:300,amp:396}
+      ]
+    },
+    Aluminio: {
+      Dos_PVC: [
+        {mm2:2.5,amp:22},{mm2:4,amp:29},{mm2:6,amp:36},{mm2:10,amp:48},{mm2:16,amp:62},{mm2:25,amp:80},
+        {mm2:35,amp:96},{mm2:50,amp:113},{mm2:70,amp:140},{mm2:95,amp:166},{mm2:120,amp:189},
+        {mm2:150,amp:213},{mm2:185,amp:240},{mm2:240,amp:277},{mm2:300,amp:313}
+      ],
+      Tres_PVC: [
+        {mm2:2.5,amp:18.5},{mm2:4,amp:24},{mm2:6,amp:30},{mm2:10,amp:40},{mm2:16,amp:52},{mm2:25,amp:66},
+        {mm2:35,amp:80},{mm2:50,amp:94},{mm2:70,amp:117},{mm2:95,amp:138},{mm2:120,amp:157},
+        {mm2:150,amp:178},{mm2:185,amp:200},{mm2:240,amp:230},{mm2:300,amp:260}
+      ],
+      Dos_XLPE: [
+        {mm2:2.5,amp:26},{mm2:4,amp:34},{mm2:6,amp:42},{mm2:10,amp:56},{mm2:16,amp:73},{mm2:25,amp:93},
+        {mm2:35,amp:112},{mm2:50,amp:132},{mm2:70,amp:163},{mm2:95,amp:193},{mm2:120,amp:220},
+        {mm2:150,amp:249},{mm2:185,amp:279},{mm2:240,amp:322},{mm2:300,amp:364}
+      ],
+      Tres_XLPE: [
+        {mm2:2.5,amp:22},{mm2:4,amp:29},{mm2:6,amp:36},{mm2:10,amp:47},{mm2:16,amp:61},{mm2:25,amp:78},
+        {mm2:35,amp:94},{mm2:50,amp:112},{mm2:70,amp:138},{mm2:95,amp:164},{mm2:120,amp:186},
+        {mm2:150,amp:210},{mm2:185,amp:236},{mm2:240,amp:272},{mm2:300,amp:308}
+      ]
     }
   }
 } as const;
 
 export const TABLA_B52_3 = [
   {
+    item: 1,
     disposicion: 'Empotrados o encerrados',
-    factores: {1:1.0, 2:0.80, 3:0.70, 4:0.70, 6:0.55, 9:0.50}
+    factores: {1:1.00, 2:0.80, 3:0.70, 4:0.70, 6:0.55, 9:0.50, 12:0.45, 16:0.40, 20:0.40}
   },
   {
-    disposicion: 'Sobre bandeja no perforada',
-    factores: {1:1.0, 2:0.85, 3:0.80, 4:0.75, 6:0.70, 9:0.70}
+    item: 2,
+    disposicion: 'Una capa sobre paredes, pisos o bandejas no perforadas',
+    factores: {1:1.00, 2:0.85, 3:0.80, 4:0.75, 6:0.70, 9:0.70}
   },
   {
-    disposicion: 'Sobre bandeja perforada',
-    factores: {1:1.0, 2:0.88, 3:0.82, 4:0.77, 6:0.73, 9:0.72}
+    item: 3,
+    disposicion: 'Una capa fijada directamente debajo del techo',
+    factores: {1:0.95, 2:0.80, 3:0.70, 4:0.70, 6:0.65, 9:0.60}
   },
   {
-    disposicion: 'En tubería en superficie',
-    factores: {1:1.0, 2:0.85, 3:0.79, 4:0.75, 6:0.68, 9:0.65}
+    item: 4,
+    disposicion: 'Una capa sobre bandejas horizontales perforadas o bandejas verticales',
+    factores: {1:1.00, 2:0.90, 3:0.80, 4:0.75, 6:0.75, 9:0.70}
+  },
+  {
+    item: 5,
+    disposicion: 'Una capa sobre soporte de cables tipo escalera o abrazaderas',
+    factores: {1:1.00, 2:0.85, 3:0.80, 4:0.80, 6:0.80, 9:0.80}
   }
 ] as const;
 
@@ -982,6 +1114,41 @@ const FACTORES_TEMP_XLPE: Record<number, number> = {
   50:0.82, 55:0.76, 60:0.71
 };
 
+/**
+ * Factores de corrección para temperatura del suelo (Método D)
+ * Referencia: 20°C para cables PVC de 70mm²
+ */
+const FACTORES_TEMP_SUELO_PVC: Record<number, number> = {
+  10:1.10, 15:1.05, 20:1.00, 25:0.95,
+  30:0.89, 35:0.84, 40:0.77, 45:0.71, 50:0.63
+};
+
+/**
+ * Factores de corrección para temperatura del suelo (Método D)
+ * Referencia: 20°C para cables XLPE de 70mm²
+ */
+const FACTORES_TEMP_SUELO_XLPE: Record<number, number> = {
+  10:1.07, 15:1.04, 20:1.00, 25:0.96,
+  30:0.93, 35:0.89, 40:0.85, 45:0.80, 50:0.76
+};
+
+/**
+ * Factores de corrección para resistividad térmica del suelo (Método D)
+ * Referencia: 2.5 K·m/W (resistividad normal según NC IEC 60364-5-52)
+ */
+const FACTORES_RESIST_TERMICA: Record<number, number> = {
+  0.5:1.28, 0.7:1.20, 1.0:1.18, 1.5:1.10,
+  2.0:1.05, 2.5:1.00, 3.0:0.96
+};
+
+/**
+ * Factores de agrupamiento para cables enterrados en paralelo (Método D)
+ * Referencia: separación 0.7m entre circuitos
+ */
+const FACTORES_AGRUPAMIENTO_D: Record<number, number> = {
+  1:1.00, 2:0.80, 3:0.70, 4:0.65, 5:0.60, 6:0.57
+};
+
 // ============================================================
 // INTERFACES PARA MÓDULOS AVANZADOS
 // ============================================================
@@ -989,11 +1156,24 @@ const FACTORES_TEMP_XLPE: Record<number, number> = {
 export interface CalculoAmpacidad {
   seccion: number;
   material: 'Cobre' | 'Aluminio';
-  metodo: 'metodo_A1' | 'metodo_B1' | 'metodo_C';
+  metodo: 'metodo_A1' | 'metodo_A2' | 'metodo_B1' | 'metodo_B2' | 'metodo_C' | 'metodo_E' | 'metodo_F';
   aislamiento: 'Dos_PVC' | 'Tres_PVC' | 'Dos_XLPE' | 'Tres_XLPE';
   temperaturaAmbiente: number;
   numCircuitos: number;
   disposicion: string;
+}
+
+/**
+ * Parámetros para cálculo de ampacidad con cables enterrados (Método D)
+ * @norma NC IEC 60364-5-52:2004 Tabla B.52-2
+ */
+export interface CalculoAmpacidadMetodoD {
+  seccion: number;
+  material: 'Cobre' | 'Aluminio';
+  aislamiento: 'Dos_PVC' | 'Tres_PVC' | 'Dos_XLPE' | 'Tres_XLPE';
+  temperaturaTerreno: number;  // °C — default 20
+  resistividadTermica: number; // K·m/W — default 2.5
+  numCircuitos: number;        // circuitos paralelos — default 1, máx 6
 }
 
 export interface CalculoCaidaTensionRX {
@@ -1055,13 +1235,23 @@ function obtenerFactorTemperatura(temp: number, esPVC: boolean): number {
 }
 
 /**
- * Obtiene el factor de agrupamiento más cercano
+ * Obtiene el factor de agrupamiento y valida límites de circuitos
+ * @throws Error si el número de circuitos excede el máximo para la disposición
  */
 function obtenerFactorAgrupamiento(numCircuitos: number, disposicion: string): number {
   const fila = TABLA_B52_3.find(f => f.disposicion === disposicion);
   if (!fila) throw new Error('Disposición no válida');
   
   const niveles = Object.keys(fila.factores).map(Number).sort((a, b) => a - b);
+  const maxNiveles = Math.max(...niveles);
+  
+  if (numCircuitos > maxNiveles) {
+    throw new Error(
+      `La disposición "${disposicion}" no tiene factor definido para más de ${maxNiveles} circuitos ` +
+      `según NC IEC 60364-5-52:2004`
+    );
+  }
+  
   const nivel = niveles.find(n => n >= numCircuitos) || niveles[niveles.length - 1];
   return fila.factores[nivel as keyof typeof fila.factores];
 }
@@ -1165,6 +1355,127 @@ export function calcularCaidaTensionRX(params: CalculoCaidaTensionRX): Resultado
     unidad: '%',
     formula,
     nota: `R=${R.toFixed(3)}Ω/km, X=${X.toFixed(3)}Ω/km, ΔV=${dV_V.toFixed(2)}V. ${nota}`
+  };
+}
+
+/**
+ * Obtiene factor de temperatura para suelo (Método D)
+ */
+function obtenerFactorTemperaturaSuelo(temp: number, esPVC: boolean): number {
+  const factores = esPVC ? FACTORES_TEMP_SUELO_PVC : FACTORES_TEMP_SUELO_XLPE;
+  const temps = Object.keys(factores).map(Number).sort((a, b) => a - b);
+  
+  if (temp in factores) {
+    return factores[temp];
+  }
+  
+  const tempMenor = temps.find(t => t < temp);
+  const tempMayor = temps.find(t => t > temp);
+  
+  if (tempMenor === undefined) return factores[temps[0]];
+  if (tempMayor === undefined) return factores[temps[temps.length - 1]];
+  
+  return interpolar(temp, tempMenor, factores[tempMenor], tempMayor, factores[tempMayor]);
+}
+
+/**
+ * Obtiene factor de resistividad térmica del suelo (Método D)
+ */
+function obtenerFactorResistividadTermica(resistividad: number): number {
+  const temores = Object.keys(FACTORES_RESIST_TERMICA).map(Number).sort((a, b) => a - b);
+  
+  if (resistividad in FACTORES_RESIST_TERMICA) {
+    return FACTORES_RESIST_TERMICA[resistividad];
+  }
+  
+  const resMenor = temores.find(r => r < resistividad);
+  const resMayor = temores.find(r => r > resistividad);
+  
+  if (resMenor === undefined) return FACTORES_RESIST_TERMICA[temores[0]];
+  if (resMayor === undefined) return FACTORES_RESIST_TERMICA[temores[temores.length - 1]];
+  
+  return interpolar(
+    resistividad,
+    resMenor,
+    FACTORES_RESIST_TERMICA[resMenor],
+    resMayor,
+    FACTORES_RESIST_TERMICA[resMayor]
+  );
+}
+
+/**
+ * Obtiene factor de agrupamiento para cables enterrados (Método D)
+ */
+function obtenerFactorAgrupamientoD(numCircuitos: number): number {
+  if (numCircuitos > 6) {
+    throw new Error(
+      'El número máximo de circuitos enterrados en paralelo es 6 según NC IEC 60364-5-52:2004'
+    );
+  }
+  
+  const nivel = Object.keys(FACTORES_AGRUPAMIENTO_D)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .find(n => n >= numCircuitos) || 6;
+  
+  return FACTORES_AGRUPAMIENTO_D[nivel];
+}
+
+/**
+ * Calcula ampacidad para cables directamente enterrados (Método D)
+ * @param seccion Sección en mm²
+ * @param material Material del conductor (Cobre o Aluminio)
+ * @param aislamiento Tipo de aislamiento y número de conductores
+ * @param temperaturaTerreno Temperatura del suelo en °C (rango 10-50)
+ * @param resistividadTermica Resistividad térmica del suelo K·m/W
+ * @param numCircuitos Número de circuitos enterrados en paralelo (máx 6)
+ * @returns Iz en Amperios
+ * @formula Iz = Ia × Ft × Fr × Fg
+ * @norma NC IEC 60364-5-52:2004 Tabla B.52-2, Tabla B.52-3
+ */
+export function calcularAmpacidadMetodoD(params: CalculoAmpacidadMetodoD): ResultadoCalculo {
+  const { seccion, material, aislamiento, temperaturaTerreno, resistividadTermica, numCircuitos } = params;
+  
+  // Validación de rango de temperaturaTerreno
+  if (temperaturaTerreno < 10 || temperaturaTerreno > 50) {
+    throw new Error('La temperatura del terreno debe estar entre 10°C y 50°C');
+  }
+  
+  // Validación de resistividad térmica
+  if (resistividadTermica < 0.5 || resistividadTermica > 3.0) {
+    throw new Error('La resistividad térmica debe estar entre 0.5 y 3.0 K·m/W');
+  }
+  
+  // Paso 1: Buscar Ia en TABLA_B52_2
+  const metodoD = TABLA_B52_2.metodo_D;
+  const materialData = metodoD[material as keyof typeof metodoD];
+  if (!materialData) throw new Error('Material no disponible para Método D');
+  
+  const aislamientoData = materialData[aislamiento as keyof typeof materialData];
+  if (!aislamientoData) throw new Error('Combinación de aislamiento no disponible para Método D');
+  
+  const fila = aislamientoData.find((f: {mm2: number; amp: number}) => f.mm2 === seccion);
+  if (!fila) throw new Error(`Sección ${seccion}mm² no disponible para esta combinación en Método D`);
+  const Ia = fila.amp;
+  
+  // Paso 2: Factor de temperatura del suelo
+  const esPVC = aislamiento.includes('PVC');
+  const Ft = obtenerFactorTemperaturaSuelo(temperaturaTerreno, esPVC);
+  
+  // Paso 3: Factor de resistividad térmica
+  const Fr = obtenerFactorResistividadTermica(resistividadTermica);
+  
+  // Paso 4: Factor de agrupamiento (circuitos paralelos)
+  const Fg = obtenerFactorAgrupamientoD(numCircuitos);
+  
+  // Paso 5: Ampacidad corregida
+  const Iz = Ia * Ft * Fr * Fg;
+  
+  return {
+    valor: Math.round(Iz * 10) / 10,
+    unidad: 'A',
+    formula: 'Iz = Ia × Ft × Fr × Fg',
+    nota: `Ia=${Ia}A (tabla D) × Ft=${Ft.toFixed(2)} (${temperaturaTerreno}°C suelo) × Fr=${Fr.toFixed(2)} (${resistividadTermica} K·m/W) × Fg=${Fg.toFixed(2)} (${numCircuitos} circuitos) — NC IEC 60364-5-52:2004 Tabla B.52-2`
   };
 }
 

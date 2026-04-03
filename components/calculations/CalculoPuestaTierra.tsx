@@ -21,6 +21,7 @@ export function CalculoPuestaTierra() {
   const [numVarillas, setNumVarillas] = useState("1");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
+  const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
   const { addToHistory } = useHistory();
 
@@ -63,14 +64,15 @@ export function CalculoPuestaTierra() {
     return valido;
   };
 
-  const calcular = () => {
+  const calcular = async () => {
     setResultado(null);
-
-    if (!validarCampos()) {
-      return;
-    }
+    setIsLoading(true);
 
     try {
+      if (!validarCampos()) {
+        return;
+      }
+
       const params = {
         resistividadSuelo: Number(resistividadSuelo),
         longitudVarilla: Number(longitudVarilla),
@@ -82,6 +84,8 @@ export function CalculoPuestaTierra() {
       showToast("Cálculo realizado exitosamente", "success");
     } catch (err) {
       showToast((err as Error).message, "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -214,9 +218,16 @@ export function CalculoPuestaTierra() {
         </div>
       </div>
 
-      <button onClick={calcular} className="btn btn-primary w-full py-3">
+      <button
+        onClick={calcular}
+        disabled={isLoading}
+        className={`btn btn-primary w-full py-3 transition-all duration-150
+          ${isLoading ? "btn-loading" : ""}
+          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]
+        `}
+      >
         <Anchor size={18} />
-        Calcular Puesta a Tierra
+        {isLoading ? "Calculando..." : "Calcular Puesta a Tierra"}
       </button>
 
       {resultado && (

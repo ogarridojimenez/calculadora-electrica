@@ -25,6 +25,7 @@ export function CalculoCadaTension() {
   const [fc, setFc] = useState("1");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
+  const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
   const { addToHistory } = useHistory();
 
@@ -67,14 +68,15 @@ export function CalculoCadaTension() {
     return valido;
   };
 
-  const calcular = () => {
+  const calcular = async () => {
     setResultado(null);
-
-    if (!validarCampos()) {
-      return;
-    }
+    setIsLoading(true);
 
     try {
+      if (!validarCampos()) {
+        return;
+      }
+
       const params = {
         voltaje: Number(voltaje),
         corriente: Number(corriente),
@@ -88,6 +90,8 @@ export function CalculoCadaTension() {
       showToast("Cálculo realizado exitosamente", "success");
     } catch (err) {
       showToast((err as Error).message, "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -240,9 +244,16 @@ export function CalculoCadaTension() {
         </div>
       </div>
 
-      <button onClick={calcular} className="btn btn-primary w-full py-3">
+      <button
+        onClick={calcular}
+        disabled={isLoading}
+        className={`btn btn-primary w-full py-3 transition-all duration-150
+          ${isLoading ? "btn-loading" : ""}
+          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]
+        `}
+      >
         <Cable size={18} />
-        Calcular Caída de Tensión
+        {isLoading ? "Calculando..." : "Calcular Caída de Tensión"}
       </button>
 
       {resultado && (

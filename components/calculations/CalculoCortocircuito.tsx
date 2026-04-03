@@ -28,8 +28,10 @@ export function CalculoCortocircuito() {
     monofasico?: { valor: number; nota: string };
     verificacion?: { valor: number; nota: string; esApto: boolean };
   } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCalcular = () => {
+  const handleCalcular = async () => {
+    setIsLoading(true);
     try {
       const cc3Result = calcularCortocircuitoTrifasico({
         tensionLinea: parseFloat(tensionLinea),
@@ -54,7 +56,7 @@ export function CalculoCortocircuito() {
         verificacion: { 
           valor: verResult.valor, 
           nota: verResult.nota || '', 
-          esApto: verResult.nota?.includes('APTO') ?? false 
+          esApto: verResult.nota?.includes('✓ APTO') ?? false 
         },
       };
 
@@ -62,6 +64,8 @@ export function CalculoCortocircuito() {
       showToast('Cálculo de cortocircuito completado', 'success');
     } catch (error) {
       showToast(error instanceof Error ? error.message : 'Error en el cálculo', 'error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -189,9 +193,12 @@ export function CalculoCortocircuito() {
       <div className="flex gap-3">
         <button
           onClick={handleCalcular}
-          className="flex-1 py-2 px-4 rounded-md bg-[var(--electric-cyan)] text-white hover:bg-[#0e7490] transition-colors font-medium"
+          disabled={isLoading}
+          className={`flex-1 py-2 px-4 rounded-md bg-[var(--electric-cyan)] text-white hover:bg-[#0e7490] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed ${
+            isLoading ? 'btn-loading' : ''
+          } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]`}
         >
-          Calcular
+          {isLoading ? 'Calculando...' : 'Calcular'}
         </button>
         {resultado && (
           <button

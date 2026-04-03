@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Hash, Plus, Trash2 } from "lucide-react";
+import { Hash, Plus, Trash2, Save } from "lucide-react";
 import { seleccionarConduit, type CalculoConduitParams, type ConductorInput, type ResultadoCalculo } from "@/lib/formulas";
 import { TABLA_TUBERIAS, AREAS_CONDUCTORES_MM2 } from "@/lib/formulas";
+import { useToast } from "@/components/ToastProvider";
+import { useHistory } from "@/components/HistoryProvider";
 
 export function CalculoConduit() {
   const [conductores, setConductores] = useState<ConductorInput[]>([
@@ -11,6 +13,9 @@ export function CalculoConduit() {
   ]);
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
+  const { addToHistory } = useHistory();
 
   const secciones = Object.keys(AREAS_CONDUCTORES_MM2).map(Number).sort((a, b) => a - b);
 
@@ -30,17 +35,36 @@ export function CalculoConduit() {
     setConductores(nuevos);
   };
 
-  const calcular = () => {
+  const calcular = async () => {
     setResultado(null);
     setError(null);
+    setIsLoading(true);
 
     try {
       const params: CalculoConduitParams = { conductores };
       const res = seleccionarConduit(params);
       setResultado(res);
+      showToast("Selección de conduit completada", "success");
     } catch (err) {
       setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const guardarEnHistorial = () => {
+    if (!resultado) return;
+    addToHistory({
+      nombre: "Selección de Conduit",
+      tipo: "conduit",
+      inputs: { conductores: JSON.stringify(conductores) },
+      resultado: {
+        valor: resultado.valor,
+        unidad: resultado.unidad,
+        formula: resultado.formula,
+      },
+    });
+    showToast("Guardado en historial", "success");
   };
 
   const getOpcionesConduit = () => {
@@ -136,9 +160,15 @@ export function CalculoConduit() {
           Agregar conductor
         </button>
 
-        <button onClick={calcular} className="btn btn-primary w-full py-3">
+        <button
+          onClick={calcular}
+          disabled={isLoading}
+          className={`btn btn-primary w-full py-3 transition-all duration-150 ${
+            isLoading ? "btn-loading" : ""
+          } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]`}
+        >
           <Hash size={18} />
-          Calcular
+          {isLoading ? "Calculando..." : "Calcular"}
         </button>
 
         {error && <p className="error-text">{error}</p>}
@@ -190,6 +220,11 @@ export function CalculoConduit() {
           </div>
 
           <p className="text-xs text-[var(--text-muted)]">Norma: NC 800 / NEC Art. 358</p>
+
+          <button onClick={guardarEnHistorial} className="btn btn-secondary w-full mt-4">
+            <Save size={18} />
+            Guardar en historial
+          </button>
         </div>
       )}
     </div>

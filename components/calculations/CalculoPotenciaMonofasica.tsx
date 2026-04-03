@@ -23,6 +23,7 @@ export function CalculoPotenciaMonofasica() {
   const [potencia, setPotencia] = useState("");
   const [fp, setFp] = useState("0.9");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [errores, setErrores] = useState<Errores>({});
   const { showToast } = useToast();
   const { addToHistory } = useHistory();
@@ -67,14 +68,15 @@ export function CalculoPotenciaMonofasica() {
     return valido;
   };
 
-  const calcular = () => {
+  const calcular = async () => {
     setResultado(null);
-
-    if (!validarCampos()) {
-      return;
-    }
+    setIsLoading(true);
 
     try {
+      if (!validarCampos()) {
+        return;
+      }
+
       const params = {
         voltaje: campoCalcular === "voltaje" ? undefined : Number(voltaje),
         corriente: campoCalcular === "corriente" ? undefined : Number(corriente),
@@ -86,6 +88,8 @@ export function CalculoPotenciaMonofasica() {
       showToast("Cálculo realizado exitosamente", "success");
     } catch (err) {
       showToast((err as Error).message, "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -210,9 +214,18 @@ export function CalculoPotenciaMonofasica() {
         />
       </div>
 
-      <button onClick={calcular} className="btn btn-primary w-full py-3">
-        <Gauge size={18} />
-        Calcular
+      <button
+        onClick={calcular}
+        disabled={isLoading}
+        aria-busy={isLoading}
+        aria-label={isLoading ? "Calculando potencia monofásica" : "Calcular potencia monofásica"}
+        className={`btn btn-primary w-full py-3 transition-all duration-150
+          ${isLoading ? "btn-loading" : ""}
+          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]
+        `}
+      >
+        <Gauge size={18} aria-hidden="true" />
+        {isLoading ? "Calculando..." : "Calcular"}
       </button>
 
       {resultado && (

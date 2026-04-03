@@ -31,6 +31,7 @@ export function CalculoCanalizacion() {
     cumple: boolean;
     tuboRecomendado?: string;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const agregarConductor = () => {
     setConductores([...conductores, { seccion: 2.5, cantidad: 1 }]);
@@ -50,7 +51,8 @@ export function CalculoCanalizacion() {
     setConductores(nuevos);
   };
 
-  const handleCalcular = () => {
+  const handleCalcular = async () => {
+    setIsLoading(true);
     try {
       const tubo = TUBOS.find(t => t.nombre === tuboSeleccionado);
       if (!tubo) throw new Error('Tubo no seleccionado');
@@ -81,6 +83,8 @@ export function CalculoCanalizacion() {
       showToast('Cálculo de canalización completado', 'success');
     } catch (error) {
       showToast(error instanceof Error ? error.message : 'Error en el cálculo', 'error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -182,9 +186,12 @@ export function CalculoCanalizacion() {
       <div className="flex gap-3">
         <button
           onClick={handleCalcular}
-          className="flex-1 py-2 px-4 rounded-md bg-[var(--electric-cyan)] text-white hover:bg-[#0e7490] transition-colors font-medium"
+          disabled={isLoading}
+          className={`flex-1 py-2 px-4 rounded-md bg-[var(--electric-cyan)] text-white hover:bg-[#0e7490] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed ${
+            isLoading ? 'btn-loading' : ''
+          } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]`}
         >
-          Calcular
+          {isLoading ? 'Calculando...' : 'Calcular'}
         </button>
         {resultado && (
           <button

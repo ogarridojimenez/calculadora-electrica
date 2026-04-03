@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Activity, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
+import { Activity, CheckCircle, AlertTriangle, XCircle, Save } from "lucide-react";
 import { calcularCaidaTensionRX, type CalculoCaidaTensionRX, type ResultadoCalculo } from "@/lib/formulas";
+import { useToast } from "@/components/ToastProvider";
+import { useHistory } from "@/components/HistoryProvider";
 
 export function CalculoCaidaTensionAvanzada() {
   const [seccion, setSeccion] = useState<number>(10);
@@ -13,13 +15,17 @@ export function CalculoCaidaTensionAvanzada() {
   const [sistema, setSistema] = useState<'monofasico' | 'trifasico'>('monofasico');
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
+  const { addToHistory } = useHistory();
 
   const secciones = [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240];
   const voltajes = [127, 220, 380, 440];
 
-  const calcular = () => {
+  const calcular = async () => {
     setResultado(null);
     setError(null);
+    setIsLoading(true);
 
     try {
       const params: CalculoCaidaTensionRX = {
@@ -32,9 +38,27 @@ export function CalculoCaidaTensionAvanzada() {
       };
       const res = calcularCaidaTensionRX(params);
       setResultado(res);
+      showToast("Cálculo de caída de tensión completado", "success");
     } catch (err) {
       setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const guardarEnHistorial = () => {
+    if (!resultado) return;
+    addToHistory({
+      nombre: "Caída de Tensión Avanzada",
+      tipo: "caida-tension-avanzada",
+      inputs: { seccion, longitud, corriente, voltaje, cosPhi, sistema },
+      resultado: {
+        valor: resultado.valor,
+        unidad: resultado.unidad,
+        formula: resultado.formula,
+      },
+    });
+    showToast("Guardado en historial", "success");
   };
 
   const getEstado = () => {
@@ -146,9 +170,15 @@ export function CalculoCaidaTensionAvanzada() {
           </div>
         </div>
 
-        <button onClick={calcular} className="btn btn-primary w-full py-3">
+        <button
+          onClick={calcular}
+          disabled={isLoading}
+          className={`btn btn-primary w-full py-3 transition-all duration-150 ${
+            isLoading ? "btn-loading" : ""
+          } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]`}
+        >
           <Activity size={18} />
-          Calcular
+          {isLoading ? "Calculando..." : "Calcular"}
         </button>
 
         {error && <p className="error-text">{error}</p>}
@@ -185,6 +215,11 @@ export function CalculoCaidaTensionAvanzada() {
 
           <p className="text-xs text-[var(--text-muted)]">Fórmula: {resultado.formula}</p>
           <p className="text-xs text-[var(--text-muted)]">{resultado.nota}</p>
+
+          <button onClick={guardarEnHistorial} className="btn btn-secondary w-full mt-4">
+            <Save size={18} />
+            Guardar en historial
+          </button>
         </div>
       )}
     </div>

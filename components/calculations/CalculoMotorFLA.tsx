@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Zap, CheckCircle } from "lucide-react";
+import { Zap, CheckCircle, Save } from "lucide-react";
 import { calcularMotorPorFLA, type CalculoMotorFLA, type ResultadoCalculo } from "@/lib/formulas";
+import { useToast } from "@/components/ToastProvider";
+import { useHistory } from "@/components/HistoryProvider";
 
 export function CalculoMotorFLA() {
   const [hp, setHp] = useState<number>(5);
@@ -13,6 +15,9 @@ export function CalculoMotorFLA() {
   const [numCircuitos, setNumCircuitos] = useState<number>(1);
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
+  const { addToHistory } = useHistory();
 
   const hpOptions = [0.5, 1, 1.5, 2, 3, 5, 7.5, 10, 15, 20, 25, 30];
   const tensiones: (220 | 380 | 440)[] = [220, 380, 440];
@@ -22,9 +27,10 @@ export function CalculoMotorFLA() {
     { value: 'metodo_C', label: 'C: Sobre bandeja' }
   ];
 
-  const calcular = () => {
+  const calcular = async () => {
     setResultado(null);
     setError(null);
+    setIsLoading(true);
 
     try {
       const params: CalculoMotorFLA = {
@@ -37,9 +43,27 @@ export function CalculoMotorFLA() {
       };
       const res = calcularMotorPorFLA(params);
       setResultado(res);
+      showToast("Cálculo de motor por FLA completado", "success");
     } catch (err) {
       setError((err as Error).message);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const guardarEnHistorial = () => {
+    if (!resultado) return;
+    addToHistory({
+      nombre: "Motor por FLA",
+      tipo: "motor-fla",
+      inputs: { hp, tension, tipoArranque, metodoInstalacion, temperaturaAmbiente, numCircuitos },
+      resultado: {
+        valor: resultado.valor,
+        unidad: resultado.unidad,
+        formula: resultado.formula,
+      },
+    });
+    showToast("Guardado en historial", "success");
   };
 
   return (
@@ -131,9 +155,15 @@ export function CalculoMotorFLA() {
           </div>
         </div>
 
-        <button onClick={calcular} className="btn btn-primary w-full py-3">
+        <button
+          onClick={calcular}
+          disabled={isLoading}
+          className={`btn btn-primary w-full py-3 transition-all duration-150 ${
+            isLoading ? "btn-loading" : ""
+          } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]`}
+        >
           <Zap size={18} />
-          Calcular
+          {isLoading ? "Calculando..." : "Calcular"}
         </button>
 
         {error && <p className="error-text">{error}</p>}
@@ -156,6 +186,11 @@ export function CalculoMotorFLA() {
           </div>
 
           <p className="text-xs text-[var(--text-muted)]">Norma: NC 804 / NC 800</p>
+
+          <button onClick={guardarEnHistorial} className="btn btn-secondary w-full mt-4">
+            <Save size={18} />
+            Guardar en historial
+          </button>
         </div>
       )}
     </div>

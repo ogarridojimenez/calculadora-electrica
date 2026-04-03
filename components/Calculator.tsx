@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Zap,
   Gauge,
@@ -38,6 +38,7 @@ import { CalculoCortocircuito } from "./calculations/CalculoCortocircuito";
 import { CalculoDemanda } from "./calculations/CalculoDemanda";
 import { CalculoCanalizacion } from "./calculations/CalculoCanalizacion";
 import { CalculoAmpacidad } from "./calculations/CalculoAmpacidad";
+import { CalculoAmpacidadMetodoD } from "./calculations/CalculoAmpacidadMetodoD";
 import { CalculoCaidaTensionAvanzada } from "./calculations/CalculoCaidaTensionAvanzada";
 import { CalculoMotorFLA } from "./calculations/CalculoMotorFLA";
 import { CalculoConduit } from "./calculations/CalculoConduit";
@@ -59,6 +60,7 @@ type TipoCalculo =
   | "demanda"
   | "canalizacion"
   | "ampacidad"
+  | "ampacidad-enterrado"
   | "caida-tension-avanzada"
   | "motor-fla"
   | "conduit";
@@ -201,11 +203,20 @@ const menuItems: OpcionMenu[] = [
     categoria: "distribucion",
   },
   {
+    id: "ampacidad-enterrado",
+    titulo: "Ampacidad Enterrada",
+    descripcion: "Método D — Cables enterrados",
+    icono: <Layers size={20} strokeWidth={1.5} />,
+    iconoCollapsed: "I↓",
+    norma: "NC 800",
+    categoria: "distribucion",
+  },
+  {
     id: "caida-tension-avanzada",
     titulo: "Caída Tensión RX",
     descripcion: "Con R y X",
     icono: <Activity size={20} strokeWidth={1.5} />,
-    iconoCollapsed: "ΔV",
+    iconoCollapsed: "ΔV₂",
     norma: "NC 800",
     categoria: "distribucion",
   },
@@ -238,8 +249,13 @@ const categorias = [
 export default function Calculator() {
   const [calculoActivo, setCalculoActivo] = useState<TipoCalculo | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { togglePanel, history } = useHistory();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const opcionSeleccionada = menuItems.find((item) => item.id === calculoActivo);
 
@@ -273,6 +289,8 @@ export default function Calculator() {
         return <CalculoCanalizacion />;
       case "ampacidad":
         return <CalculoAmpacidad />;
+      case "ampacidad-enterrado":
+        return <CalculoAmpacidadMetodoD />;
       case "caida-tension-avanzada":
         return <CalculoCaidaTensionAvanzada />;
       case "motor-fla":
@@ -496,7 +514,7 @@ export default function Calculator() {
               {/* Quick Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
                 {[
-                  { label: "Cálculos", value: "18", color: "var(--electric-cyan)", icono: <Zap size={24} /> },
+                  { label: "Cálculos", value: "17", color: "var(--electric-cyan)", icono: <Zap size={24} /> },
                   { label: "Normas", value: "5", color: "var(--ground-green)", icono: <BookOpen size={24} /> },
                   { label: "Categorías", value: "3", color: "var(--warning-amber)", icono: <Layers size={24} /> },
                   { label: "Validaciones", value: "✓", color: "var(--electric-cyan)", icono: <Shield size={24} /> },
@@ -564,7 +582,7 @@ export default function Calculator() {
         title="Ver historial"
       >
         <Clock size={24} />
-        {history.length > 0 && (
+        {mounted && history.length > 0 && (
           <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[var(--alert-red)] text-white text-xs flex items-center justify-center font-bold">
             {history.length > 9 ? '9+' : history.length}
           </span>

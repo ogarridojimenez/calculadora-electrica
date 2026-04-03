@@ -15,6 +15,7 @@ export function CalculoProteccion() {
   const [tipoCarga, setTipoCarga] = useState<"general" | "motores" | "transformador">("general");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
+  const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
   const { addToHistory } = useHistory();
 
@@ -43,14 +44,15 @@ export function CalculoProteccion() {
     return valido;
   };
 
-  const calcular = () => {
+  const calcular = async () => {
     setResultado(null);
-
-    if (!validarCampos()) {
-      return;
-    }
+    setIsLoading(true);
 
     try {
+      if (!validarCampos()) {
+        return;
+      }
+
       const params = {
         corriente: Number(corriente),
         tipoCarga,
@@ -60,6 +62,8 @@ export function CalculoProteccion() {
       showToast("Cálculo realizado exitosamente", "success");
     } catch (err) {
       showToast((err as Error).message, "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -153,9 +157,16 @@ export function CalculoProteccion() {
         </div>
       )}
 
-      <button onClick={calcular} className="btn btn-primary w-full py-3">
+      <button
+        onClick={calcular}
+        disabled={isLoading}
+        className={`btn btn-primary w-full py-3 transition-all duration-150
+          ${isLoading ? "btn-loading" : ""}
+          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]
+        `}
+      >
         <Shield size={18} />
-        Calcular Protección
+        {isLoading ? "Calculando..." : "Calcular Protección"}
       </button>
 
       {resultado && (

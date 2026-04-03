@@ -35,6 +35,7 @@ export function CalculoIluminacion() {
     indiceLocal?: { valor: number; nota: string };
     potenciaInstalada?: { valor: number; nota: string };
   } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTipoLocalChange = (tipo: string) => {
     setTipoLocal(tipo);
@@ -44,7 +45,8 @@ export function CalculoIluminacion() {
     }
   };
 
-  const handleCalcular = () => {
+  const handleCalcular = async () => {
+    setIsLoading(true);
     try {
       const flujoResult = calcularFlujoLuminoso({
         iluminancia: parseFloat(iluminancia),
@@ -76,6 +78,8 @@ export function CalculoIluminacion() {
       showToast('Cálculo de iluminación completado', 'success');
     } catch (error) {
       showToast(error instanceof Error ? error.message : 'Error en el cálculo', 'error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -262,9 +266,12 @@ export function CalculoIluminacion() {
       <div className="flex gap-3">
         <button
           onClick={handleCalcular}
-          className="flex-1 py-2 px-4 rounded-md bg-[var(--electric-cyan)] text-white hover:bg-[#0e7490] transition-colors font-medium"
+          disabled={isLoading}
+          className={`flex-1 py-2 px-4 rounded-md bg-[var(--electric-cyan)] text-white hover:bg-[#0e7490] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed ${
+            isLoading ? 'btn-loading' : ''
+          } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]`}
         >
-          Calcular
+          {isLoading ? 'Calculando...' : 'Calcular'}
         </button>
         {resultado && (
           <button

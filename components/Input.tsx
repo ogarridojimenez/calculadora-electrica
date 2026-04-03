@@ -15,12 +15,13 @@ export function Input({ label, error, className = "", ...props }: InputProps) {
       </label>
       <input
         className={`
-          w-full px-3 py-2 text-sm rounded-md border
+          w-full px-3 py-2 text-sm rounded-md border transition-all duration-150
           bg-[var(--control-bg)] border-[var(--border-default)]
           text-[var(--text-primary)] outline-none
+          hover:border-cyan-600/50 hover:bg-[var(--surface-raised)]
           focus:border-[var(--electric-cyan)] focus:ring-2 focus:ring-[var(--control-focus-ring)]
-          disabled:bg-[var(--control-bg-disabled)] disabled:text-[var(--text-muted)]
-          ${error ? "border-[var(--alert-red)] bg-[var(--alert-red-subtle)]" : ""}
+          disabled:bg-[var(--control-bg-disabled)] disabled:text-[var(--text-muted)] disabled:opacity-60 disabled:cursor-not-allowed
+          ${error ? "input-error" : ""}
         `}
         {...props}
       />
@@ -43,12 +44,13 @@ export function Select({ label, options, error, className = "", ...props }: Sele
       </label>
       <select
         className={`
-          w-full px-3 py-2 text-sm rounded-md border
+          w-full px-3 py-2 text-sm rounded-md border transition-all duration-150
           bg-[var(--control-bg)] border-[var(--border-default)]
           text-[var(--text-primary)] outline-none
+          hover:border-cyan-600/50 hover:bg-[var(--surface-raised)]
           focus:border-[var(--electric-cyan)] focus:ring-2 focus:ring-[var(--control-focus-ring)]
-          disabled:bg-[var(--control-bg-disabled)] disabled:text-[var(--text-muted)]
-          ${error ? "border-[var(--alert-red)] bg-[var(--alert-red-subtle)]" : ""}
+          disabled:bg-[var(--control-bg-disabled)] disabled:text-[var(--text-muted)] disabled:opacity-60 disabled:cursor-not-allowed
+          ${error ? "input-error" : ""}
         `}
         {...props}
       >

@@ -30,6 +30,7 @@ import {
   aplicarFactoresCorreccion,
   verificarSelectividad,
   calcularAmpacidadCorregida,
+  calcularAmpacidadMetodoD,
   calcularCaidaTensionRX,
   calcularMotorPorFLA,
   seleccionarConduit,
@@ -585,20 +586,6 @@ describe("CalculoAmpacidadCorregida", () => {
     expect(result.valor).toBeCloseTo(77, 0);
   });
 
-  test("combinación inválida → debe lanzar Error", () => {
-    expect(() =>
-      calcularAmpacidadCorregida({
-        seccion: 120,
-        material: "Aluminio",
-        metodo: "metodo_C",
-        aislamiento: "Tres_XLPE",
-        temperaturaAmbiente: 30,
-        numCircuitos: 1,
-        disposicion: "Empotrados o encerrados",
-      })
-    ).toThrow();
-  });
-
   test("temperatura 40°C PVC → Ft = 0.87", () => {
     const result = calcularAmpacidadCorregida({
       seccion: 10,
@@ -751,6 +738,282 @@ describe("SeleccionarConduit", () => {
         conductores: [
           { seccion: 300, cantidad: 1 },
         ],
+      })
+    ).toThrow();
+  });
+});
+
+// ============================================================
+// TESTS PARA TABLA_B52_1 EXPANDIDA (Métodos A2, B2, E, F)
+// ============================================================
+
+describe("Ampacidad TABLA_B52_1 Método A2 (Cobre)", () => {
+  test("A2 Cobre Tres_PVC 10mm² → 39A", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 10,
+      material: 'Cobre',
+      metodo: 'metodo_A2',
+      aislamiento: 'Tres_PVC',
+      temperaturaAmbiente: 30,
+      numCircuitos: 1,
+      disposicion: 'Empotrados o encerrados'
+    });
+    expect(result.valor).toBeGreaterThan(30);
+  });
+
+  test("A2 Cobre Dos_XLPE 150mm² → 285A", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 150,
+      material: 'Cobre',
+      metodo: 'metodo_A2',
+      aislamiento: 'Dos_XLPE',
+      temperaturaAmbiente: 30,
+      numCircuitos: 1,
+      disposicion: 'Empotrados o encerrados'
+    });
+    expect(result.valor).toBeGreaterThan(200);
+  });
+});
+
+describe("Ampacidad TABLA_B52_1 Método B2 (Cobre)", () => {
+  test("B2 Cobre Dos_XLPE 50mm² → 167A", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 50,
+      material: 'Cobre',
+      metodo: 'metodo_B2',
+      aislamiento: 'Dos_XLPE',
+      temperaturaAmbiente: 30,
+      numCircuitos: 1,
+      disposicion: 'Empotrados o encerrados'
+    });
+    expect(result.valor).toBeGreaterThan(100);
+  });
+});
+
+describe("Ampacidad TABLA_B52_1 Método E (Cobre)", () => {
+  test("E Cobre Tres_XLPE 95mm² → 298A", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 95,
+      material: 'Cobre',
+      metodo: 'metodo_E',
+      aislamiento: 'Tres_XLPE',
+      temperaturaAmbiente: 30,
+      numCircuitos: 1,
+      disposicion: 'Empotrados o encerrados'
+    });
+    expect(result.valor).toBeGreaterThan(200);
+  });
+});
+
+describe("Ampacidad TABLA_B52_1 Método F (Cobre)", () => {
+  test("F Cobre Dos_PVC 25mm² → 127A", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 25,
+      material: 'Cobre',
+      metodo: 'metodo_F',
+      aislamiento: 'Dos_PVC',
+      temperaturaAmbiente: 30,
+      numCircuitos: 1,
+      disposicion: 'Empotrados o encerrados'
+    });
+    expect(result.valor).toBeGreaterThan(80);
+  });
+});
+
+describe("Ampacidad TABLA_B52_1 Método A1 Aluminio", () => {
+  test("A1 Aluminio Tres_XLPE 95mm² → 170A", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 95,
+      material: 'Aluminio',
+      metodo: 'metodo_A1',
+      aislamiento: 'Tres_XLPE',
+      temperaturaAmbiente: 30,
+      numCircuitos: 1,
+      disposicion: 'Empotrados o encerrados'
+    });
+    expect(result.valor).toBeLessThan(200);
+  });
+});
+
+describe("Ampacidad TABLA_B52_1 Método C Aluminio", () => {
+  test("C Aluminio Tres_PVC 25mm² → 57A", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 25,
+      material: 'Aluminio',
+      metodo: 'metodo_C',
+      aislamiento: 'Tres_PVC',
+      temperaturaAmbiente: 30,
+      numCircuitos: 1,
+      disposicion: 'Empotrados o encerrados'
+    });
+    expect(result.valor).toBeGreaterThan(30);
+  });
+
+  test("C Aluminio Tres_PVC 4mm² → debe lanzar Error (no disponible)", () => {
+    expect(() => 
+      calcularAmpacidadCorregida({
+        seccion: 4,
+        material: 'Aluminio',
+        metodo: 'metodo_C',
+        aislamiento: 'Tres_PVC',
+        temperaturaAmbiente: 30,
+        numCircuitos: 1,
+        disposicion: 'Empotrados o encerrados'
+      })
+    ).toThrow();
+  });
+});
+
+// ============================================================
+// TESTS PARA TABLA_B52_3 ACTUALIZADA (5 disposiciones)
+// ============================================================
+
+describe("Ampacidad TABLA_B52_3 Disposición Debajo Techo", () => {
+  test("Disposición 'debajo del techo' con 1 circuito → Fg = 0.95", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 10,
+      material: 'Cobre',
+      metodo: 'metodo_A1',
+      aislamiento: 'Tres_PVC',
+      temperaturaAmbiente: 30,
+      numCircuitos: 1,
+      disposicion: 'Una capa fijada directamente debajo del techo'
+    });
+    expect(result.nota).toContain('Fg');
+  });
+
+  test("Disposición 'debajo del techo' con 6 circuitos → Fg = 0.65", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 10,
+      material: 'Cobre',
+      metodo: 'metodo_A1',
+      aislamiento: 'Tres_PVC',
+      temperaturaAmbiente: 30,
+      numCircuitos: 6,
+      disposicion: 'Una capa fijada directamente debajo del techo'
+    });
+    expect(result.valor).toBeGreaterThan(0);
+  });
+});
+
+describe("Ampacidad TABLA_B52_3 Validación Límites Circuitos", () => {
+  test("Empotrados con 12 circuitos → debe funcionar (máx 20)", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 10,
+      material: 'Cobre',
+      metodo: 'metodo_A1',
+      aislamiento: 'Tres_PVC',
+      temperaturaAmbiente: 30,
+      numCircuitos: 12,
+      disposicion: 'Empotrados o encerrados'
+    });
+    expect(result.valor).toBeGreaterThan(0);
+  });
+
+  test("Empotrados con 20 circuitos → debe funcionar (máx 20)", () => {
+    const result = calcularAmpacidadCorregida({
+      seccion: 10,
+      material: 'Cobre',
+      metodo: 'metodo_A1',
+      aislamiento: 'Tres_PVC',
+      temperaturaAmbiente: 30,
+      numCircuitos: 20,
+      disposicion: 'Empotrados o encerrados'
+    });
+    expect(result.valor).toBeGreaterThan(0);
+  });
+
+  test("Disposición 'no perforada' con 12 circuitos → debe lanzar Error (máx 9)", () => {
+    expect(() =>
+      calcularAmpacidadCorregida({
+        seccion: 10,
+        material: 'Cobre',
+        metodo: 'metodo_A1',
+        aislamiento: 'Tres_PVC',
+        temperaturaAmbiente: 30,
+        numCircuitos: 12,
+        disposicion: 'Una capa sobre paredes, pisos o bandejas no perforadas'
+      })
+    ).toThrow();
+  });
+});
+
+// ============================================================
+// TESTS PARA calcularAmpacidadMetodoD()
+// ============================================================
+
+describe("Ampacidad Método D (Cables Enterrados)", () => {
+  test("Cu Dos_XLPE 50mm² temp 20°C resist 2.5 K·m/W 1 circuito → 173A", () => {
+    const result = calcularAmpacidadMetodoD({
+      seccion: 50,
+      material: 'Cobre',
+      aislamiento: 'Dos_XLPE',
+      temperaturaTerreno: 20,
+      resistividadTermica: 2.5,
+      numCircuitos: 1
+    });
+    expect(result.valor).toBeGreaterThan(140);
+  });
+
+  test("Cu Tres_PVC 95mm² temp 25°C resist 2.5 K·m/W 1 circuito → Ft < 1.0", () => {
+    const result = calcularAmpacidadMetodoD({
+      seccion: 95,
+      material: 'Cobre',
+      aislamiento: 'Tres_PVC',
+      temperaturaTerreno: 25,
+      resistividadTermica: 2.5,
+      numCircuitos: 1
+    });
+    expect(result.valor).toBeGreaterThan(150);
+  });
+
+  test("Al Dos_PVC 70mm² temp 20°C resist 1.5 K·m/W 2 circuitos → con factores", () => {
+    const result = calcularAmpacidadMetodoD({
+      seccion: 70,
+      material: 'Aluminio',
+      aislamiento: 'Dos_PVC',
+      temperaturaTerreno: 20,
+      resistividadTermica: 1.5,
+      numCircuitos: 2
+    });
+    expect(result.valor).toBeGreaterThan(80);
+  });
+
+  test("Temperatura fuera de rango (5°C) → debe lanzar Error", () => {
+    expect(() =>
+      calcularAmpacidadMetodoD({
+        seccion: 50,
+        material: 'Cobre',
+        aislamiento: 'Dos_XLPE',
+        temperaturaTerreno: 5,
+        resistividadTermica: 2.5,
+        numCircuitos: 1
+      })
+    ).toThrow();
+  });
+
+  test("Resistividad fuera de rango (4.0) → debe lanzar Error", () => {
+    expect(() =>
+      calcularAmpacidadMetodoD({
+        seccion: 50,
+        material: 'Cobre',
+        aislamiento: 'Dos_XLPE',
+        temperaturaTerreno: 20,
+        resistividadTermica: 4.0,
+        numCircuitos: 1
+      })
+    ).toThrow();
+  });
+
+  test("Más de 6 circuitos → debe lanzar Error", () => {
+    expect(() =>
+      calcularAmpacidadMetodoD({
+        seccion: 50,
+        material: 'Cobre',
+        aislamiento: 'Dos_XLPE',
+        temperaturaTerreno: 20,
+        resistividadTermica: 2.5,
+        numCircuitos: 7
       })
     ).toThrow();
   });

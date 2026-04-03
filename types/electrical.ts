@@ -12,7 +12,7 @@ export type TipoLocal = {
   iluminanciaRecomendada: number;
 };
 
-export type ResultadoCalculo = {
+export type ResultadoBase = {
   valor: number;
   unidad: string;
   cumpleNorma: EstadoCumplimiento;
@@ -20,38 +20,38 @@ export type ResultadoCalculo = {
   recomendacion?: string;
 };
 
-export type ResultadoIluminacion = ResultadoCalculo & {
+export type ResultadoIluminacion = ResultadoBase & {
   flujoTotal?: number;
   numeroLuminarias?: number;
 };
 
-export type ResultadoMotor = ResultadoCalculo & {
+export type ResultadoMotor = ResultadoBase & {
   corrienteNominal?: number;
   corrienteArranque?: number;
   proteccion?: number;
   seccion?: number;
 };
 
-export type ResultadoCortocircuito = ResultadoCalculo & {
+export type ResultadoCortocircuito = ResultadoBase & {
   iccTrifasico?: number;
   iccMonofasico?: number;
   poderCorte?: number;
   esApto?: boolean;
 };
 
-export type ResultadoTierra = ResultadoCalculo & {
+export type ResultadoTierra = ResultadoBase & {
   resistencia?: number;
   seccionPE?: number;
   electrodos?: number;
 };
 
-export type ResultadoDemanda = ResultadoCalculo & {
+export type ResultadoDemanda = ResultadoBase & {
   demandaKW?: number;
   demandaKVA?: number;
   corrienteAcometida?: number;
 };
 
-export type ResultadoCanalizacion = ResultadoCalculo & {
+export type ResultadoCanalizacion = ResultadoBase & {
   ocupacionPorcentaje?: number;
   diametroTubo?: string;
 };

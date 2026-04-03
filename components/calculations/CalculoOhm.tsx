@@ -22,6 +22,7 @@ export function CalculoOhm() {
   const [r, setR] = useState("");
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Errores>({});
+  const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
 
   const validarCampos = (): boolean => {
@@ -66,15 +67,16 @@ export function CalculoOhm() {
     return valido;
   };
 
-  const calcular = () => {
+  const calcular = async () => {
     setResultado(null);
-
-    if (!validarCampos()) {
-      showToast("Verifique los campos ingresados", "error");
-      return;
-    }
+    setIsLoading(true);
 
     try {
+      if (!validarCampos()) {
+        showToast("Verifique los campos ingresados", "error");
+        return;
+      }
+
       const params = {
         v: campoCalcular === "v" ? undefined : Number(v),
         i: campoCalcular === "i" ? undefined : Number(i),
@@ -85,6 +87,8 @@ export function CalculoOhm() {
       showToast("Cálculo realizado con éxito", "success");
     } catch (err) {
       showToast((err as Error).message, "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -180,9 +184,18 @@ export function CalculoOhm() {
       </div>
 
       {/* Botón de cálculo */}
-      <button onClick={calcular} className="btn btn-primary w-full py-3">
-        <CalcIcon size={18} />
-        Calcular
+      <button
+        onClick={calcular}
+        disabled={isLoading}
+        aria-busy={isLoading}
+        aria-label={isLoading ? "Calculando Ley de Ohm" : "Calcular Ley de Ohm"}
+        className={`btn btn-primary w-full py-3 transition-all duration-150
+          ${isLoading ? "btn-loading" : ""}
+          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]
+        `}
+      >
+        <CalcIcon size={18} aria-hidden="true" />
+        {isLoading ? "Calculando..." : "Calcular"}
       </button>
 
       {/* Resultado */}

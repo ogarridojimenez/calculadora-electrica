@@ -33,7 +33,7 @@
 
 ## ✨ Características
 
-- **14 Calculadoras Especializadas** - La suite más completa de cálculo eléctrico
+- **18 Calculadoras Especializadas** - La suite más completa de cálculo eléctrico
 - **Validación de Entradas** - Validación robusta de todos los campos de entrada
 - **Diseño Responsivo** - Adaptado para escritorio y dispositivos móviles
 - **PWA (Progressive Web App)** - Instálala en tu móvil como app nativa
@@ -41,11 +41,12 @@
 - **Interface Profesional** - Diseño moderno orientado a ingenieros eléctricos
 - **Notificaciones Toast** - Feedback visual de cálculos realizados
 - **Historial** - Guarda y exporta cálculos en PDF con nombre personalizado
-- **Normas Cubanas** - Implementación fiel de las normas NC eléctricas
-- **Factores de Corrección** - Temperatura y agrupación de conductores
+- **Normas Cubanas (NC 800-804)** - Implementación fiel de las normas NC eléctricas
+- **NC IEC 60364-5-52** - Ampacidad con 7 métodos en aire + cables enterrados
+- **Factores de Corrección** - Temperatura, agrupamiento y resistividad térmica
 - **Indicadores de Cumplimiento** - Visualización clara de cumplimiento normativo
 - **Código TypeScript** - Tipado estático para mayor seguridad y mantenibilidad
-- **Unit Tests** - 27+ pruebas unitarias para funciones de cálculo
+- **Unit Tests** - 97 pruebas unitarias para funciones de cálculo
 - **CI/CD** - GitHub Actions para integración continua
 - **Security Headers** - Headers HTTP de seguridad configurados
 - **TypeScript Estricto** - Sin `any`, sin `@ts-ignore`
@@ -63,13 +64,18 @@
 | **Potencia Trifásica** | P = √3 × V_L × I × cos(φ) | Sistemas industriales trifásicos | NC 800 |
 | **Factor de Potencia** | Qc = P(tanφ₁ - tanφ₂) | Corrección del factor de potencia | - |
 | **Motor Eléctrico** | I_n = P/(√3×V_L×η×cosφ) | Corriente nominal, arranque, protección | NC 804 |
+| **Motor por FLA** | Lookup en tabla | Selección rápida por potencia nominal | NC 804 |
 
 ### Distribución
 
 | Cálculo | Fórmula | Descripción | Norma |
 |---------|---------|-------------|-------|
 | **Caída de Tensión** | ΔV = 2KIL/S | Verificación ≤3% iluminación, ≤5% fuerza | NC 800 |
+| **Caída Tensión RX** | ΔV = (2/1000)(IRcosφ+IXsenφ) | Con resistencia y reactancia del cable | NC 800 |
 | **Sección de Conductor** | S = IL/(K×cosφ) | K=56 Cu, K=35 Al (30°C) | NC 800 |
+| **Ampacidad Corregida** | Iz = Ia × Ft × Fg | 7 métodos en aire (A1-F) | NC IEC 60364-5-52 |
+| **Ampacidad Enterrada** | Iz = Ia × Ft × Fr × Fg | Cables directamente enterrados (Método D) | NC IEC 60364-5-52 |
+| **Selección Conduit** | %Ocup ≤40% | Dimensionamiento de ductos | NC 800 |
 | **Iluminación** | Φ = (E×A)/(η×fm) | Flujo luminoso, número de luminarias | NC 803 |
 | **Demanda Máxima** | D = Σ(P×fd)/fp | Método detallado y residencial simplificado | NC 800 |
 | **Canalización** | %Ocup = ΣAcond/Atubo | Verificación de ocupación de tubos | NC 800 |
@@ -93,6 +99,18 @@
 | **NC 802** | Sistemas de puesta a tierra | Resistencia de puesta a tierra ≤25Ω |
 | **NC 803** | Alumbrado eléctrico | Cálculos de iluminación de interiores |
 | **NC 804** | Motores eléctricos | Dimensionamiento de circuitos de motores |
+| **NC IEC 60364-5-52** | Ampacidad de conductores | 7 métodos en aire + cables enterrados |
+
+### Métodos de Ampacidad (NC IEC 60364-5-52)
+
+- **A1**: Unipolar en tubo empotrado en pared
+- **A2**: Multiconductor en tubo empotrado en pared
+- **B1**: Unipolar en tubo en superficie o bandeja
+- **B2**: Multiconductor en tubo en superficie
+- **C**: Cable sobre pared o bandeja
+- **E**: Cable al aire libre horizontal
+- **F**: Cable al aire libre vertical
+- **D**: Cables directamente enterrados
 
 ---
 
@@ -187,22 +205,27 @@ calculadora-electrica/
 │   ├── HistoryProvider.tsx   # Proveedor de historial
 │   ├── HistoryPanel.tsx     # Panel de historial
 │   ├── PWAUpdater.tsx        # Registro de service worker
-│   └── calculations/         # Módulos de cálculo individuales
+│   └── calculations/         # Módulos de cálculo individuales (18 total)
 │       ├── CalculoOhm.tsx
 │       ├── CalculoPotenciaMonofasica.tsx
 │       ├── CalculoPotenciaTrifasica.tsx
 │       ├── CalculoCadaTension.tsx
+│       ├── CalculoCaidaTensionAvanzada.tsx      # Con R y X
 │       ├── CalculoSeccionConductor.tsx
-│       ├── CalculoProteccion.tsx
-│       ├── CalculoPuestaTierra.tsx
+│       ├── CalculoProteccion.tsx                # NC 801
+│       ├── CalculoPuestaTierra.tsx              # NC 802
 │       ├── CalculoFactorPotencia.tsx
-│       ├── CalculoIluminacion.tsx    # NC 803
-│       ├── CalculoMotor.tsx           # NC 804
-│       ├── CalculoCortocircuito.tsx    # NC 801
-│       ├── CalculoDemanda.tsx          # NC 800
-│       └── CalculoCanalizacion.tsx    # NC 800
+│       ├── CalculoIluminacion.tsx               # NC 803
+│       ├── CalculoMotor.tsx                     # NC 804
+│       ├── CalculoMotorFLA.tsx                  # Lookup por FLA
+│       ├── CalculoCortocircuito.tsx             # NC 801
+│       ├── CalculoDemanda.tsx                   # NC 800
+│       ├── CalculoCanalizacion.tsx              # NC 800
+│       ├── CalculoConduit.tsx                   # NEC Art. 358
+│       ├── CalculoAmpacidad.tsx                 # NC IEC 60364-5-52 (7 métodos)
+│       └── CalculoAmpacidadMetodoD.tsx          # Cables enterrados
 ├── lib/
-│   ├── formulas.ts           # Lógica de cálculos eléctricos
+│   ├── formulas.ts           # Lógica de cálculos eléctricos (1500+ líneas)
 │   ├── pdfExport.tsx         # Exportación a PDF
 │   └── constants/
 │       └── normas-cubanas.ts  # Constantes normativas
@@ -217,7 +240,7 @@ calculadora-electrica/
 │       └── ci.yml            # GitHub Actions CI/CD
 ├── __tests__/
 │   └── lib/
-│       └── formulas.test.ts  # Pruebas unitarias
+│       └── formulas.test.ts  # 97 pruebas unitarias
 ├── jest.config.js
 ├── jest.setup.ts
 ├── next.config.ts
@@ -244,29 +267,39 @@ calculadora-electrica/
 
 ## 📊 Resumen de Funcionalidades
 
-### Módulos de Cálculo (14 total)
+### Módulos de Cálculo (18 total)
 
 1. **Ley de Ohm** - V, I, R
 2. **Potencia Monofásica** - P = V × I × cos(φ)
 3. **Potencia Trifásica** - P = √3 × V_L × I × cos(φ)
 4. **Caída de Tensión** - Verificación normativa NC 800
-5. **Sección de Conductor** - Dimensionamiento K=56/35
-6. **Protección Magnetotérmica** - Interruptores NC 801
-7. **Puesta a Tierra** - R ≤ 25Ω NC 802
-8. **Factor de Potencia** - Banco de capacitores
-9. **Iluminación (NC 803)** - Flujo, luminarias, índice local
-10. **Motor Eléctrico (NC 804)** - Nominal, arranque, protección
-11. **Cortocircuito (NC 801)** - Icc trifásico/monofásico
-12. **Demanda Máxima (NC 800)** - Método detallado y residencial
-13. **Canalización (NC 800)** - Ocupación de tubos
+5. **Caída de Tensión RX** - Con resistencia y reactancia
+6. **Sección de Conductor** - Dimensionamiento K=56/35
+7. **Protección Magnetotérmica** - Interruptores NC 801
+8. **Puesta a Tierra** - R ≤ 25Ω NC 802
+9. **Factor de Potencia** - Banco de capacitores
+10. **Iluminación (NC 803)** - Flujo, luminarias, índice local
+11. **Motor Eléctrico (NC 804)** - Nominal, arranque, protección
+12. **Motor por FLA** - Lookup rápido por potencia
+13. **Cortocircuito (NC 801)** - Icc trifásico/monofásico
+14. **Demanda Máxima (NC 800)** - Método detallado y residencial
+15. **Canalización (NC 800)** - Ocupación de tubos
+16. **Selección Conduit (NEC 358)** - Dimensionamiento de ductos
+17. **Ampacidad Corregida (NC IEC 60364-5-52)** - 7 métodos (A1-F)
+18. **Ampacidad Enterrada (Método D)** - Cables subterráneos
 
 ### Características Técnicas
 
-- Constantes normativas centralizadas en `/lib/constants/`
-- Tipos TypeScript especializados en `/types/`
-- Factores de corrección (temperatura, agrupación)
-- Secciones normalizadas cubanas
-- Tablas de iluminación por tipo de local
+- **18 Calculadoras** especializadas en ingeniería eléctrica
+- **Constantes normativas** centralizadas en `/lib/constants/`
+- **Tipos TypeScript** especializados en `/types/`
+- **Factores de corrección** (temperatura, agrupación, resistividad térmica)
+- **Secciones normalizadas** cubanas
+- **Tablas de iluminación** por tipo de local
+- **Tablas de ampacidad** completas (NC IEC 60364-5-52)
+- **Validaciones robustas** en todos los inputs
+- **97 tests unitarios** de cobertura completa
+- **PWA funcional** con soporte offline
 
 ---
 

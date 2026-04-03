@@ -29,8 +29,10 @@ export function CalculoMotor() {
     conductor?: { valor: number; nota: string };
     contactor?: { valor: number; nota: string };
   } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCalcular = () => {
+  const handleCalcular = async () => {
+    setIsLoading(true);
     try {
       const cnResult = calcularCorrienteNominalMotor({
         potencia: parseFloat(potencia),
@@ -60,6 +62,8 @@ export function CalculoMotor() {
       showToast('Cálculo de motor completado', 'success');
     } catch (error) {
       showToast(error instanceof Error ? error.message : 'Error en el cálculo', 'error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -178,9 +182,12 @@ export function CalculoMotor() {
       <div className="flex gap-3">
         <button
           onClick={handleCalcular}
-          className="flex-1 py-2 px-4 rounded-md bg-[var(--electric-cyan)] text-white hover:bg-[#0e7490] transition-colors font-medium"
+          disabled={isLoading}
+          className={`flex-1 py-2 px-4 rounded-md bg-[var(--electric-cyan)] text-white hover:bg-[#0e7490] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed ${
+            isLoading ? 'btn-loading' : ''
+          } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]`}
         >
-          Calcular
+          {isLoading ? 'Calculando...' : 'Calcular'}
         </button>
         {resultado && (
           <button

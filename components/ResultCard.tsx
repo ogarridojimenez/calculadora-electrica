@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import { Save } from "lucide-react";
 import type { ResultadoCalculo } from "@/lib/formulas";
 import { useToast } from "./ToastProvider";
@@ -15,19 +16,25 @@ interface ResultCardProps {
 export function ResultCard({ resultado, titulo, tipo, inputs }: ResultCardProps) {
   const { showToast } = useToast();
   const { addToHistory } = useHistory();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const guardarEnHistorial = () => {
-    addToHistory({
-      nombre: titulo,
-      tipo,
-      inputs: inputs || {},
-      resultado: {
-        valor: resultado.valor,
-        unidad: resultado.unidad,
-        formula: resultado.formula,
-      },
-    });
-    showToast("Cálculo guardado en historial", "success");
+  const guardarEnHistorial = async () => {
+    setIsLoading(true);
+    try {
+      addToHistory({
+        nombre: titulo,
+        tipo,
+        inputs: inputs || {},
+        resultado: {
+          valor: resultado.valor,
+          unidad: resultado.unidad,
+          formula: resultado.formula,
+        },
+      });
+      showToast("Cálculo guardado en historial", "success");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const esExitoso = resultado.unidad !== "ERROR";
@@ -73,10 +80,15 @@ export function ResultCard({ resultado, titulo, tipo, inputs }: ResultCardProps)
 
       <button
         onClick={guardarEnHistorial}
-        className="w-full mt-4 py-3 px-4 rounded-lg bg-[var(--ground-green)] text-white hover:bg-[#047857] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 text-sm font-medium"
+        disabled={isLoading}
+        className={`w-full mt-4 py-3 px-4 rounded-lg bg-[var(--ground-green)] text-white transition-all duration-150 flex items-center justify-center gap-2 text-sm font-medium
+          ${isLoading ? "btn-loading" : "hover:bg-[#047857] active:scale-[0.96]"}
+          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--border-focus)]
+          disabled:opacity-50 disabled:cursor-not-allowed
+        `}
       >
         <Save size={16} />
-        Guardar en Historial
+        {isLoading ? "Guardando..." : "Guardar en Historial"}
       </button>
     </div>
   );
